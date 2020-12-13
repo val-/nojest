@@ -1,5 +1,9 @@
 # Описание стуктуры базы данных
 
+
+![alt text](./db-relationships.svg?raw=true)
+
+
 ## Users table
 * id
 * name
@@ -9,9 +13,6 @@
 * password_hash
 * date_of_birth
 * gender
-* country
-* city
-* education_level
 
 ## Languages table
 * id
@@ -34,14 +35,12 @@
 * author_id
 * title
 * description
-* status
 * author_price
 
 ## Tasks table
 * id
 * order_id
 * contractor_id
-* status
 * contractor_price
 
 ## Messages table
@@ -63,4 +62,8 @@
 * date_time
 * status
 
-
+## Feedback table
+* task_id
+* feedback_sender_id
+* feedback_recipient_id
+* text
