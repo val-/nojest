@@ -1,7 +1,7 @@
 # Описание стуктуры базы данных
 
 
-![alt text](./db-relationships.png?raw=true)
+![alt text](img/db-relationships.png?raw=true)
 
 
 ## Users table
