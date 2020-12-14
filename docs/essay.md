@@ -18,9 +18,12 @@
 <br/> 
 <br/> 
 <br/> 
+
 ![alt text](img/timeline.svg?raw=true)
+
 <br/> 
-<br/>  
+<br/>
+
 [источник](https://www.kommersant.ru/doc/1832981)
 [источник](https://freelance.today/)
 [источник](https://ru.wikipedia.org/wiki/Youdo)
