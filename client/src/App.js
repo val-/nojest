@@ -10,6 +10,7 @@ import { createMuiTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import LoginPage from './pages/login';
 import ProfilePage from './pages/profile';
+import CreateOrderPage from './pages/createOrder';
 import palette from './palette';
 
 function App() {
@@ -42,21 +43,13 @@ function App() {
                 <ProfilePage />
               </Route>
               <Route path="/create-order">
-                <CreateOrder />
+                <CreateOrderPage />
               </Route>
             </Switch>
 
         </Router>
       </ThemeProvider>
     </>
-  );
-}
-
-function CreateOrder() {
-  return (
-    <div>
-      <h2>Create order</h2>
-    </div>
   );
 }
 

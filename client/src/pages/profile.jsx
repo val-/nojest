@@ -11,6 +11,7 @@ import {
   Select,
   MenuItem,
   Chip,
+  Typography,
 } from '@material-ui/core';
 import LanguageIcon from '@material-ui/icons/Language';
 import WorkIcon from '@material-ui/icons/Work';
@@ -55,10 +56,17 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginBottom: theme.spacing(4),
   },
+  form: {
+    paddingTop: theme.spacing(5),
+  },
   formRow: {
     display: 'flex',
     justifyContent: 'space-between',
     marginBottom: theme.spacing(4),
+  },
+  formRowButtons: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   formControlSelect: {
     width: '47%',
@@ -144,6 +152,9 @@ const ProfilePage = props => {
           </Box>
         </Box>
         <Box className={classes.cellRight}>
+          <Typography variant="h3">
+            User profile
+          </Typography>
           <form
             className={classes.form}
           >
@@ -224,15 +235,33 @@ const ProfilePage = props => {
                 </Select>
               </FormControl>
             </Box>
-            <Button
-              className={classes.saveButton}
-              color="primary"
-              size="large"
-              type="submit"
-              variant="contained"
-            >
-              Save
-            </Button>
+            <Box className={classes.formRowButtons}>
+              <Button
+                className={classes.saveButton}
+                color="primary"
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                Save pfofile
+              </Button>
+              <Button
+                className={classes.saveButton}
+                color="primary"
+                size="large"
+                variant="contained"
+              >
+                Add profession
+              </Button>
+              <Button
+                className={classes.saveButton}
+                color="primary"
+                size="large"
+                variant="contained"
+              >
+                Add language
+              </Button>
+            </Box>
           </form>
         </Box>
       </Paper>
