@@ -61,6 +61,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  formCellHalf: {
+    width: '47%',
+  },
   formControlSelect: {
     width: '47%',
   },
@@ -82,6 +85,8 @@ const CreateOrderPage = props => {
   const [formState, setFormState] = useState({ values: {
     title: '',
     description: '',
+    platform: 'web',
+    language: 'RU'
   } });
 
   useEffect(() => {
@@ -119,17 +124,58 @@ const CreateOrderPage = props => {
           />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Box className={classes.formRow}>
-                <KeyboardDatePicker
-                  className={classes.datePicker}
-                  label="Timelimit"
-                  format="dd.MM.yyyy"
-                  value={formState.values.timelimit}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
+              <Box className={classes.formCellHalf}>
+                <TextField
+                  className={classes.textFieldInRow}
+                  fullWidth
+                  label="Expected price"
+                  name="expectedPrice"
+                  multiline
+                  type="text"
+                  value={formState.values.expectedPrice || ''}
                 />
+              </Box>
+              <KeyboardDatePicker
+                className={classes.datePicker}
+                label="Timelimit"
+                format="dd.MM.yyyy"
+                value={formState.values.timelimit}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
             </Box>
           </MuiPickersUtilsProvider>
+          <Box className={classes.formRow}>
+            <FormControl className={classes.formControlSelect}>
+              <InputLabel id="language-select-label">Target language</InputLabel>
+              <Select
+                labelId="language-select-label"
+                id="language-select"
+                className={classes.select}
+                value={formState.values.language}
+              >
+                <MenuItem value={'RU'}>Russian</MenuItem>
+                <MenuItem value={'EN'}>English</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControlSelect}>
+              <InputLabel id="platform-select-label">Target platform</InputLabel>
+              <Select
+                labelId="platform-select-label"
+                id="platform-select"
+                className={classes.select}
+                value={formState.values.platform}
+              >
+                <MenuItem value={'ios'}>IOS</MenuItem>
+                <MenuItem value={'android'}>Android</MenuItem>
+                <MenuItem value={'tv'}>TV</MenuItem>
+                <MenuItem value={'mac'}>Mac</MenuItem>
+                <MenuItem value={'pc'}>PC</MenuItem>
+                <MenuItem value={'web'}>Web</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
           <Box className={classes.formRowButtons}>
             <Button
               className={classes.saveButton}

@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const LoginPage = props => {
+const RegistrationPage = props => {
 
   const classes = useStyles();
 
@@ -52,7 +52,7 @@ const LoginPage = props => {
     }));
   }, [formState.values]);
 
-  const handleSignIn = event => {
+  const handleSignUp = event => {
     event.preventDefault();
     const { email, password } = formState.values;
     if (email && password) {
@@ -77,10 +77,10 @@ const LoginPage = props => {
       <Paper square>
         <form
           className={classes.form}
-          onSubmit={handleSignIn}
+          onSubmit={handleSignUp}
         >
           <Typography variant="h3" className={classes.title}>
-            Sign in
+            Sign up
           </Typography>
           { props.error &&
             <Alert
@@ -90,6 +90,14 @@ const LoginPage = props => {
               props.error
             </Alert>
           }
+          <TextField
+            className={classes.textField}
+            fullWidth
+            label="Full name"
+            name="fullName"
+            type="text"
+            value={formState.values.fullName || ''}
+          />
           <TextField
             className={classes.textField}
             fullWidth
@@ -117,8 +125,8 @@ const LoginPage = props => {
           >
             Enter
           </Button>
-          <Link href="registration" variant="body2">
-            Don't have an account? Sign Up
+          <Link href="./" variant="body2">
+            Already have an account? Sign in
           </Link>
         </form>
       </Paper>
@@ -127,4 +135,4 @@ const LoginPage = props => {
 
 };
 
-export default LoginPage;
+export default RegistrationPage;

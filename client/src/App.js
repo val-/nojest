@@ -9,6 +9,7 @@ import {
 import { createMuiTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import LoginPage from './pages/login';
+import RegistrationPage from './pages/registration';
 import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
 import palette from './palette';
@@ -38,6 +39,9 @@ function App() {
             <Switch>
               <Route exact path="/">
                 <LoginPage />
+              </Route>
+              <Route exact path="/registration">
+                <RegistrationPage />
               </Route>
               <Route path="/profile">
                 <ProfilePage />
