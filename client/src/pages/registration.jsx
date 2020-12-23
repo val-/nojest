@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   Paper,
@@ -54,10 +53,13 @@ const RegistrationPage = props => {
 
   const handleSignUp = event => {
     event.preventDefault();
-    const { email, password } = formState.values;
-    if (email && password) {
-      // TODO
-    }
+    fetch('api/registration', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formState.values)
+    }).then(resp => {
+      console.log('resp: ', resp);
+    });
   };
 
   const handleChange = event => {
@@ -95,6 +97,7 @@ const RegistrationPage = props => {
             fullWidth
             label="Full name"
             name="fullName"
+            onChange={handleChange}
             type="text"
             value={formState.values.fullName || ''}
           />
@@ -103,6 +106,7 @@ const RegistrationPage = props => {
             fullWidth
             label="Email address"
             name="email"
+            onChange={handleChange}
             type="text"
             value={formState.values.email || ''}
           />

@@ -34,6 +34,9 @@ function App() {
               <li>
                 <Link to="/create-order">Create order</Link>
               </li>
+              <li>
+                <Link to="/registration">Registration</Link>
+              </li>
             </ul>
 
             <Switch>
@@ -43,10 +46,10 @@ function App() {
               <Route exact path="/registration">
                 <RegistrationPage />
               </Route>
-              <Route path="/profile">
+              <Route exact path="/profile">
                 <ProfilePage />
               </Route>
-              <Route path="/create-order">
+              <Route exact path="/create-order">
                 <CreateOrderPage />
               </Route>
             </Switch>

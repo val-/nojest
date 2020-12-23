@@ -117,7 +117,7 @@ const LoginPage = props => {
           >
             Enter
           </Button>
-          <Link href="registration" variant="body2">
+          <Link href="/registration" variant="body2">
             Don't have an account? Sign Up
           </Link>
         </form>
