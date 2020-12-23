@@ -1,0 +1,13 @@
+{
+  "name": "nojest",
+  "version": "1.0.0",
+  "description": "Nojest application",
+  "private": true,
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
+}
