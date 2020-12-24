@@ -1,5 +1,7 @@
 const db = require('./../config/database');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const activationLinkLetter = require('../letters/activationLink');
 
 const validateUserData = (data) => new Promise((resolve, reject) => {
     if (!data.password || !data.email) {
@@ -52,12 +54,16 @@ const hashPassword = (password) => new Promise((resolve, reject) => {
 
 module.exports = {
 
-    create: (data) => new Promise((resolve, reject) => {
+    create: (data, siteUrl) => new Promise((resolve, reject) => {
+        const token = crypto.randomBytes(32).toString('hex');
         validateUserData(data).then(
             () => hashPassword(data.password)
         ).then((passwordHash) => db.query(
-            'INSERT INTO nj_user (email, email_confirmed, password_hash, full_name) VALUES ($1, $2, $3, $4) returning id',
-            [data.email, false, passwordHash, data.fullName]
+            'INSERT INTO nj_user (email, email_confirmed, email_confirm_token, password_hash, full_name) VALUES ($1, $2, $3, $4, $5) returning id',
+            [data.email, false, token, passwordHash, data.fullName]
+        )).then(() => activationLinkLetter(
+            data.email,
+            `${siteUrl}/activation/${token}`
         )).then(resolve).catch(reject);
     }),
 

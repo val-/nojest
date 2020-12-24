@@ -6,6 +6,7 @@ create table nj_user(
     phone varchar(30),
     email varchar(255),
     email_confirmed boolean,
+    email_confirm_token varchar(255),
     password_hash varchar(255),
     date_of_birth date,
     gender nj_gender_type,
