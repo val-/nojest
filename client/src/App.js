@@ -5,13 +5,14 @@ import {
   Switch,
   Route,
   Link
-} from "react-router-dom";
+} from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import LoginPage from './pages/login';
 import RegistrationPage from './pages/registration';
 import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
+import ProfileActivationPage from './pages/profileActivation';
 import palette from './palette';
 
 function App() {
@@ -51,6 +52,9 @@ function App() {
               </Route>
               <Route exact path="/create-order">
                 <CreateOrderPage />
+              </Route>
+              <Route path="/activation/:token">
+                <ProfileActivationPage />
               </Route>
             </Switch>
 

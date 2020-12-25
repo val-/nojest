@@ -60,11 +60,28 @@ module.exports = {
             () => hashPassword(data.password)
         ).then((passwordHash) => db.query(
             'INSERT INTO nj_user (email, email_confirmed, email_confirm_token, password_hash, full_name) VALUES ($1, $2, $3, $4, $5) returning id',
-            [data.email, false, token, passwordHash, data.fullName]
+            [ data.email, false, token, passwordHash, data.fullName ]
         )).then(() => activationLinkLetter(
             data.email,
             `${siteUrl}/activation/${token}`
         )).then(resolve).catch(reject);
+    }),
+
+    activation: (token) => new Promise((resolve, reject) => {
+        db.query(
+            'SELECT id FROM nj_user WHERE email_confirm_token = $1',
+            [ token ]
+        ).then(result => {
+            if (result.rows[0]) {
+                const { id } = result.rows[0];
+                return db.query(
+                    'UPDATE nj_user SET email_confirmed = TRUE WHERE id = $1',
+                    [ id ]
+                )
+            } else {
+                reject('User not found');
+            }
+        }).then(resolve).catch(reject);
     }),
 
 };

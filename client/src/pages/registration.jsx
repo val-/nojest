@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
+import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,13 +54,9 @@ const RegistrationPage = props => {
 
   const handleSignUp = event => {
     event.preventDefault();
-    fetch('api/registration', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formState.values)
-    }).then(resp => {
+    backend.registration(formState.values).then(resp => {
       console.log('resp: ', resp);
-    });
+    })
   };
 
   const handleChange = event => {
