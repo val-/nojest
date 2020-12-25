@@ -60,7 +60,7 @@ const findUserByEmail = (email) => new Promise(function(resolve, reject) {
         const user = result.rows[0];
         if (user) {
             if (user.email_confirmed) {
-                resolve();
+                resolve(user);
             } else {
                 reject('E-mail not confirmed');
             }
@@ -75,10 +75,21 @@ const findUserByEmail = (email) => new Promise(function(resolve, reject) {
 const verifyPassword = (password, user) => new Promise(function(resolve, reject) {
     bcrypt.compare(password, user.password_hash, (err, result) => {
         if (result) {
-            resolve();
+            resolve(user);
         } else {
             reject('Authorization error');
         }
+    });
+});
+
+const generateUserProfile = user => new Promise(function(resolve, reject) {
+    resolve({
+        id: user.id,
+        email: user.email,
+        fullName: user.full_name,
+        dateOfBirth: user.date_of_birth,
+        gender: user.gender,
+        avatar: user.avatar,
     });
 });
 
@@ -88,15 +99,9 @@ module.exports = {
         if (!data.email || !data.password) {
             reject('Email or password missing');
         } else {
-            let userData;
             findUserByEmail(data.email).then(
-                user => {
-                    userData = user;
-                    return verifyPassword(data.password, user);
-                }
-            ).then(() => {
-                resolve(userData);
-            }, () => {
+                user => verifyPassword(data.password, user)
+            ).then(generateUserProfile).then(resolve).catch(() => {
                 reject('Authorization error');
             });
         }
