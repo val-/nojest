@@ -23,7 +23,7 @@ module.exports = {
 function handleErrorMessages(err) {
     return new Promise((resolve) => {
         if (err.code == '23505') {
-            err = 'email already in use, please use a different one'
+            err = 'email already in use'
         } else if (err.code == '22P02') {
             err = 'invalid user UUID'
         } else if (process.env.NODE_ENV !== 'development') {

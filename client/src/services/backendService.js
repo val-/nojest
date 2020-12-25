@@ -1,7 +1,12 @@
 export const backendService = {
+    login,
     registration,
     activation,
 };
+
+function login(params) {
+    return fetchJSON('/api/login', 'POST', params);
+}
 
 function registration(params) {
     return fetchJSON('/api/registration', 'POST', params);
@@ -17,6 +22,17 @@ function fetchJSON(url, method = 'GET', params = {}) {
         options.headers = { 'Content-Type': 'application/json' };
         options.body = JSON.stringify(params);
     }
-    return fetch(url, options);
+    return new Promise((resolve, reject) => {
+        fetch(url, options).then(resp => resp.json()).then(
+            resp => {
+                if (resp.error) {
+                    reject(resp.error);
+                } else {
+                    resolve(resp);
+                }
+            },
+            reject
+        );
+    });
 }
 

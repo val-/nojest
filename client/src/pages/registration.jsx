@@ -9,6 +9,8 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
+import MessageLayout from '../components/messageLayout';
+import ScreenLocker from '../components/screenLocker';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -54,9 +56,31 @@ const RegistrationPage = props => {
 
   const handleSignUp = event => {
     event.preventDefault();
-    backend.registration(formState.values).then(resp => {
-      console.log('resp: ', resp);
-    })
+    setFormState(formState => ({
+      ...formState,
+      loading: true,
+      registrationError: false,
+    }));
+    backend.registration(formState.values).then(
+      handleSuccess,
+      handleError,
+    )
+  };
+
+  const handleSuccess = () => {
+    setFormState(formState => ({
+      ...formState,
+      registrationSuccess: true,
+      loading: false,
+    }));
+  };
+
+  const handleError = err => {
+    setFormState(formState => ({
+      ...formState,
+      registrationError: err,
+      loading: false,
+    }));
   };
 
   const handleChange = event => {
@@ -70,9 +94,27 @@ const RegistrationPage = props => {
     }));
   };
 
+  if (formState.loading) {
+    return <ScreenLocker />;
+  }
+
+  if (formState.registrationSuccess) {
+    return (
+      <MessageLayout>
+        <Typography variant="h4" className={classes.title}>
+          Registration success!
+        </Typography>
+        <Box mt={2}>
+          <Typography variant="body1">
+            Please read letter wich we send to {formState.values.email}
+          </Typography>
+        </Box>
+      </MessageLayout>
+    );
+  }
+
   return (
     <Box className={classes.root}>
-
       <Paper square>
         <form
           className={classes.form}
@@ -81,12 +123,12 @@ const RegistrationPage = props => {
           <Typography variant="h3" className={classes.title}>
             Sign up
           </Typography>
-          { props.error &&
+          { formState.registrationError &&
             <Alert
               severity="error"
               className={classes.alert}
             >
-              props.error
+              {formState.registrationError}
             </Alert>
           }
           <TextField
