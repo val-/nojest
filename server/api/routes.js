@@ -2,9 +2,13 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 
+const sessionContext = require('./handlers/sessionContext');
+const login = require('./handlers/login');
 const registration = require('./handlers/registration');
 const activation = require('./handlers/activation');
 
+router.get('/session-context', jsonParser, sessionContext);
+router.post('/login', jsonParser, login);
 router.post('/registration', jsonParser, registration);
 router.post('/activation', jsonParser, activation);
 

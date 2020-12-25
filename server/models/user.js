@@ -52,7 +52,55 @@ const hashPassword = (password) => new Promise((resolve, reject) => {
     });
 });
 
+const findUserByEmail = (email) => new Promise(function(resolve, reject) {
+    db.query(
+        'SELECT * FROM nj_user WHERE email = $1',
+        [email]
+    ).then(result => {
+        const user = result.rows[0];
+        if (user) {
+            if (user.email_confirmed) {
+                resolve();
+            } else {
+                reject('E-mail not confirmed');
+            }
+        } else {
+            reject('Authorization error');
+        }
+    }, () => {
+        reject('Authorization error');
+    });
+});
+
+const verifyPassword = (password, user) => new Promise(function(resolve, reject) {
+    bcrypt.compare(password, user.password_hash, (err, result) => {
+        if (result) {
+            resolve();
+        } else {
+            reject('Authorization error');
+        }
+    });
+});
+
 module.exports = {
+
+    login: (data) => new Promise((resolve, reject) => {
+        if (!data.email || !data.password) {
+            reject('Email or password missing');
+        } else {
+            let userData;
+            findUserByEmail(data.email).then(
+                user => {
+                    userData = user;
+                    return verifyPassword(data.password, user);
+                }
+            ).then(() => {
+                resolve(userData);
+            }, () => {
+                reject('Authorization error');
+            });
+        }
+    }),
 
     create: (data, siteUrl) => new Promise((resolve, reject) => {
         const token = crypto.randomBytes(32).toString('hex');

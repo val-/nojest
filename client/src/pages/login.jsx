@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
+import { useHistory } from 'react-router-dom';
+import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,8 +45,8 @@ const useStyles = makeStyles(theme => ({
 const LoginPage = props => {
 
   const classes = useStyles();
-
   const [formState, setFormState] = useState({ values: {} });
+  const history = useHistory();
 
   useEffect(() => {
     setFormState(formState => ({
@@ -54,10 +56,27 @@ const LoginPage = props => {
 
   const handleSignIn = event => {
     event.preventDefault();
-    const { email, password } = formState.values;
-    if (email && password) {
-      // TODO
-    }
+    setFormState(formState => ({
+      ...formState,
+      loading: true,
+      error: false,
+    }));
+    backend.login(formState.values).then(
+      handleSuccess,
+      handleError,
+    );
+  };
+
+  const handleSuccess = () => {
+    history.push('profile');
+  };
+
+  const handleError = err => {
+    setFormState(formState => ({
+      ...formState,
+      error: err,
+      loading: false,
+    }));
   };
 
   const handleChange = event => {
@@ -82,12 +101,12 @@ const LoginPage = props => {
           <Typography variant="h3" className={classes.title}>
             Sign in
           </Typography>
-          { props.error &&
+          { formState.error &&
             <Alert
               severity="error"
               className={classes.alert}
             >
-              props.error
+              {formState.error}
             </Alert>
           }
           <TextField
@@ -95,6 +114,7 @@ const LoginPage = props => {
             fullWidth
             label="Email address"
             name="email"
+            onChange={handleChange}
             type="text"
             value={formState.values.email || ''}
           />

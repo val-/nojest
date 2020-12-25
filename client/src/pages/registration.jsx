@@ -64,7 +64,7 @@ const RegistrationPage = props => {
     backend.registration(formState.values).then(
       handleSuccess,
       handleError,
-    )
+    );
   };
 
   const handleSuccess = () => {
