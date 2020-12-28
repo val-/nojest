@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RegistrationPage = props => {
+const RegistrationPage = () => {
 
   const classes = useStyles();
 

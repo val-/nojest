@@ -1,11 +1,33 @@
 export const backendService = {
+    updateSessionContext,
+    getSessionContext,
     login,
+    logout,
     registration,
     activation,
 };
 
+let sessionContextState;
+
+function updateSessionContext() {
+    return new Promise((resolve, reject) => {
+        fetchJSON('/api/session-context').then(resp => {
+            sessionContextState = resp;
+            resolve(resp);
+        }, reject)
+    });
+}
+
+function getSessionContext() {
+    return sessionContextState;
+}
+
 function login(params) {
     return fetchJSON('/api/login', 'POST', params);
+}
+
+function logout() {
+    return fetchJSON('/api/logout');
 }
 
 function registration(params) {

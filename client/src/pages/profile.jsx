@@ -22,6 +22,8 @@ import {
 } from '@material-ui/pickers';
 import Rating from '@material-ui/lab/Rating';
 import { makeStyles } from '@material-ui/styles';
+import MainLayout from '../components/mainLayout';
+import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -86,26 +88,39 @@ const ProfilePage = props => {
 
   const classes = useStyles();
 
-  const [formState, setFormState] = useState({ values: {
-    name: 'Valentin Agafonov',
-    email: 'webkoder@ya.ru',
-    phone: '+7 916 024 49 13',
-    dateOfBirth: new Date('1988-08-29T21:11:54'),
-    gender: 'MALE',
-    country: 'RU',
-    city: 'MOW',
-  } });
+  const [formState, setFormState] = useState({
+    initialized: false,
+    values: {
+      name: 'Valentin Agafonov',
+      email: 'webkoder@ya.ru',
+      phone: '+7 916 024 49 13',
+      dateOfBirth: new Date('1988-08-29T21:11:54'),
+      gender: 'MALE',
+      country: 'RU',
+      city: 'MOW',
+    }
+  });
 
   useEffect(() => {
-    setFormState(formState => ({
-      ...formState
-    }));
-  }, [formState.values]);
+    if (!formState.initialized) {
+      const { authorizedUser } = backend.getSessionContext();
+      setFormState(() => ({
+        initialized: true,
+        avatar: authorizedUser.avatar,
+        values: {
+          fullName: authorizedUser.fullName,
+          email: authorizedUser.email,
+          gender: authorizedUser.gender,
+          dateOfBirth: authorizedUser.dateOfBirth,
+        },
+      }));
+    }
+  }, [formState]);
 
   const handleDelete = () => {};
 
   return (
-    <Box className={classes.root}>
+    <MainLayout>
       <Paper square className={classes.paper}>
         <Box className={classes.cellLeft}>
           <Avatar
@@ -152,7 +167,7 @@ const ProfilePage = props => {
           </Box>
         </Box>
         <Box className={classes.cellRight}>
-          <Typography variant="h3">
+          <Typography variant="h4">
             User profile
           </Typography>
           <form
@@ -162,7 +177,7 @@ const ProfilePage = props => {
               className={classes.textField}
               fullWidth
               label="Full name"
-              name="name"
+              name="fullName"
               type="text"
               value={formState.values.name || ''}
             />
@@ -265,7 +280,7 @@ const ProfilePage = props => {
           </form>
         </Box>
       </Paper>
-    </Box>
+    </MainLayout>
   );
 
 };

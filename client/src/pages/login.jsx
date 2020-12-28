@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
-import { useHistory } from 'react-router-dom';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -46,7 +45,6 @@ const LoginPage = props => {
 
   const classes = useStyles();
   const [formState, setFormState] = useState({ values: {} });
-  const history = useHistory();
 
   useEffect(() => {
     setFormState(formState => ({
@@ -68,7 +66,7 @@ const LoginPage = props => {
   };
 
   const handleSuccess = () => {
-    history.push('profile');
+    window.location.reload();
   };
 
   const handleError = err => {

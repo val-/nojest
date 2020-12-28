@@ -1,10 +1,11 @@
 import 'fontsource-roboto';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
   BrowserRouter as Router,
   Switch,
+  Redirect,
   Route,
-  Link
 } from 'react-router-dom';
 import { createMuiTheme } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
@@ -14,51 +15,79 @@ import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
 import ProfileActivationPage from './pages/profileActivation';
 import palette from './palette';
+import { backendService as backend } from './services/backendService';
+import ScreenLocker from './components/screenLocker';
 
 function App() {
 
   const theme = createMuiTheme({ palette });
 
+  const [sessionState, setSessionState] = useState({ initialized: false });
+
+  useEffect(() => {
+    if (!sessionState.initialized) {
+      backend.updateSessionContext().then(resp => {
+        setSessionState(() => ({
+          initialized: true,
+          authorizedUser: resp.authorizedUser || false,
+        }));
+      });
+    }
+  });
+
+  const PrivateRoute = ({ children, ...rest }) => (
+    <Route {...rest} render={({ location }) => {
+      if (sessionState.authorizedUser) {
+        return children;
+      } else {
+        return <Redirect to={{ pathname: '/login', state: { from: location } }} />;
+      }
+    }} />
+  );
+
+  const UnauthorizedRoute = ({ children, ...rest }) => (
+    <Route {...rest} render={({ location }) => {
+      if (!sessionState.authorizedUser) {
+        return children;
+      } else {
+        return <Redirect to={{ pathname: '/profile', state: { from: location } }} />;
+      }
+    }} />
+  );
+
+  const generateApp = () => {
+    if (!sessionState.initialized) {
+      return <ScreenLocker />;
+    } else {
+      return (
+        <Router>
+          <Switch>
+            <UnauthorizedRoute exact path="/login">
+              <LoginPage />
+            </UnauthorizedRoute>
+            <UnauthorizedRoute exact path="/registration">
+              <RegistrationPage />
+            </UnauthorizedRoute>
+            <UnauthorizedRoute path="/activation/:token">
+              <ProfileActivationPage />
+            </UnauthorizedRoute>
+            <PrivateRoute exact path="/profile">
+              <ProfilePage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/create-order">
+              <CreateOrderPage />
+            </PrivateRoute>
+          </Switch>
+        </Router>
+      );
+    }
+  };
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
-          
-            <ul id="demo-links">
-              <li>
-                <Link to="/">Login</Link>
-              </li>
-              <li>
-                <Link to="/profile">Profile</Link>
-              </li>
-              <li>
-                <Link to="/create-order">Create order</Link>
-              </li>
-              <li>
-                <Link to="/registration">Registration</Link>
-              </li>
-            </ul>
-
-            <Switch>
-              <Route exact path="/">
-                <LoginPage />
-              </Route>
-              <Route exact path="/registration">
-                <RegistrationPage />
-              </Route>
-              <Route exact path="/profile">
-                <ProfilePage />
-              </Route>
-              <Route exact path="/create-order">
-                <CreateOrderPage />
-              </Route>
-              <Route path="/activation/:token">
-                <ProfileActivationPage />
-              </Route>
-            </Switch>
-
-        </Router>
+        {generateApp()}
       </ThemeProvider>
     </>
   );
