@@ -71,6 +71,9 @@ function App() {
             <UnauthorizedRoute path="/activation/:token">
               <ProfileActivationPage />
             </UnauthorizedRoute>
+            <PrivateRoute exact path="/">
+              <Redirect to="/profile" />
+            </PrivateRoute>
             <PrivateRoute exact path="/profile">
               <ProfilePage />
             </PrivateRoute>

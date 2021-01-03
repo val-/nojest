@@ -23,6 +23,7 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import { makeStyles } from '@material-ui/styles';
 import MainLayout from '../components/mainLayout';
+import ScreenLocker from '../components/screenLocker';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -88,18 +89,7 @@ const ProfilePage = props => {
 
   const classes = useStyles();
 
-  const [formState, setFormState] = useState({
-    initialized: false,
-    values: {
-      name: 'Valentin Agafonov',
-      email: 'webkoder@ya.ru',
-      phone: '+7 916 024 49 13',
-      dateOfBirth: new Date('1988-08-29T21:11:54'),
-      gender: 'MALE',
-      country: 'RU',
-      city: 'MOW',
-    }
-  });
+  const [formState, setFormState] = useState({ initialized: false });
 
   useEffect(() => {
     if (!formState.initialized) {
@@ -110,8 +100,11 @@ const ProfilePage = props => {
         values: {
           fullName: authorizedUser.fullName,
           email: authorizedUser.email,
-          gender: authorizedUser.gender,
-          dateOfBirth: authorizedUser.dateOfBirth,
+          phone: authorizedUser.phone || '',
+          dateOfBirth: authorizedUser.dateOfBirth || null,
+          gender: authorizedUser.gender || null,
+          country: authorizedUser.country || null,
+          city: authorizedUser.city || null,
         },
       }));
     }
@@ -119,15 +112,37 @@ const ProfilePage = props => {
 
   const handleDelete = () => {};
 
+  const generateAvatar = () => {
+    if (formState.avatar) {
+      return (
+        <Avatar
+          className={classes.avatar}
+          alt="Avatar"
+          src="/static/images/avatar.jpg"
+        />
+      );
+    } else {
+      const firstLetters = formState.values.fullName.split(' ').map(
+        word => word[0]
+      );
+      return (
+        <Avatar className={classes.avatar}>
+          {firstLetters[0] || ''}
+          {firstLetters[1] || ''}
+        </Avatar>
+      );
+    }
+  };
+
+  if (!formState.initialized) {
+    return <ScreenLocker />;
+  }
+
   return (
     <MainLayout>
       <Paper square className={classes.paper}>
         <Box className={classes.cellLeft}>
-          <Avatar
-            className={classes.avatar}
-            alt="Avatar"
-            src="/static/images/avatar.jpg"
-          />
+          { generateAvatar() }
           <Box className={classes.ratingBox}>
             <Rating
               name="profile-rating"
@@ -179,7 +194,7 @@ const ProfilePage = props => {
               label="Full name"
               name="fullName"
               type="text"
-              value={formState.values.name || ''}
+              value={formState.values.fullName || ''}
             />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Box className={classes.formRow}>
