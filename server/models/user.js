@@ -150,7 +150,6 @@ module.exports = {
             city,
         } = data;
         const dateOfBirthObj = new Date(dateOfBirth);
-        console.log('phoneNumber: ', phoneNumber);
         validateProfileData(data).then(() => db.query(
             `
                 UPDATE nj_user
@@ -172,6 +171,28 @@ module.exports = {
                 city || 'NULL',
             ]
         )).then(() => {
+            findUserByEmail(email).then(user => {
+                resolve(generateUserProfile(user));
+            }, reject)
+        }).catch(reject);
+    }),
+
+    setAvatar: data => new Promise((resolve, reject) => {
+        const {
+            email,
+            avaBase64,
+        } = data;
+        db.query(
+            `
+                UPDATE nj_user
+                SET avatar = $2
+                WHERE email = $1
+            `,
+            [
+                email,
+                avaBase64
+            ]
+        ).then(() => {
             findUserByEmail(email).then(user => {
                 resolve(generateUserProfile(user));
             }, reject)
