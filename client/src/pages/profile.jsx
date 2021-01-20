@@ -87,6 +87,9 @@ const useStyles = makeStyles(theme => ({
   chipsBox: {
     paddingTop: theme.spacing(2),
   },
+  avatarFileInput: {
+    display: 'none',
+  },
 }));
 
 const ProfilePage = props => {
@@ -94,6 +97,8 @@ const ProfilePage = props => {
   const classes = useStyles();
 
   const [formState, setFormState] = useState({ initialized: false });
+
+  const MAX_AVA_SIZE = 100000;
 
   useEffect(() => {
     if (!formState.initialized) {
@@ -171,7 +176,7 @@ const ProfilePage = props => {
         <Avatar
           className={classes.avatar}
           alt="Avatar"
-          src="/static/images/avatar.jpg"
+          src={formState.avatar}
         />
       );
     } else {
@@ -187,6 +192,31 @@ const ProfilePage = props => {
     }
   };
 
+  const fileInput = React.createRef();
+
+  const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+
+  const handleUploadAvatar = event => {
+    event.preventDefault();
+    toBase64(fileInput.current.files[0]).then(
+      avaBase64 => {
+        if (avaBase64.length < MAX_AVA_SIZE) {
+          backend.uploadAvatar({
+            avaBase64,
+            email: formState.values.email,
+          });
+        } else {
+          alert('The file size is too large');
+        }
+      }
+    );
+  }
+
   if (!formState.initialized) {
     return <ScreenLocker />;
   }
@@ -195,7 +225,17 @@ const ProfilePage = props => {
     <MainLayout>
       <Paper square className={classes.paper}>
         <Box className={classes.cellLeft}>
-          { generateAvatar() }
+          <form onSubmit={handleUploadAvatar} >
+            <label>
+              { generateAvatar() }
+              <input
+                type="file"
+                ref={fileInput}
+                className={classes.avatarFileInput}
+                onChange={handleUploadAvatar}
+              />
+            </label>
+          </form>
           <Box className={classes.ratingBox}>
             <Rating
               name="profile-rating"

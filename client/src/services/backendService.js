@@ -6,6 +6,7 @@ export const backendService = {
     registration,
     activation,
     updateProfile,
+    uploadAvatar,
 };
 
 let sessionContextState;
@@ -50,6 +51,19 @@ function activation(token) {
 function updateProfile(params) {
     return new Promise((resolve, reject) => {
         fetchJSON('/api/update-profile', 'POST', params).then(
+            resp => {
+                updateSessionContext().then(() => {
+                    resolve(resp);
+                }, reject);
+            },
+            reject
+        );
+    });
+}
+
+function uploadAvatar(params) {
+    return new Promise((resolve, reject) => {
+        fetchJSON('/api/upload-avatar', 'POST', params).then(
             resp => {
                 updateSessionContext().then(() => {
                     resolve(resp);
