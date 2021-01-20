@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import InputIcon from '@material-ui/icons/Input';
-import WorkIcon from '@material-ui/icons/Work';
+import { ReactComponent as Logo } from '../assets/logo.svg';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -16,15 +16,11 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.background.paper,
   },
   logoBox: {
-    padding: theme.spacing(1)
+    padding: theme.spacing(1, 0)
   },
   logoIcon: {
     display: 'block',
-    width: '125px',
-    height: '29px',
-    '& *': {
-      fill: theme.palette.white
-    }
+    width: '150px',
   },
   logoutBox: {
     padding: theme.spacing(1),
@@ -53,7 +49,7 @@ const Headline = () => {
     <AppBar>
       <Toolbar className={classes.row}>
         <Box className={classes.logoBox}>
-          <WorkIcon className={classes.logoIcon} />
+          <Logo className={classes.logoIcon} />
         </Box>
         <Box className={classes.logoutBoxAndSwitcher}>
           <Box className={classes.logoutBox} onClick={handleLogout}>

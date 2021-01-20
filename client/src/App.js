@@ -14,19 +14,23 @@ import RegistrationPage from './pages/registration';
 import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
 import ProfileActivationPage from './pages/profileActivation';
-import palette from './palette';
+import themePalette from './themePalette';
+import themeOverrides from './themeOverrides';
 import { backendService as backend } from './services/backendService';
 import ScreenLocker from './components/screenLocker';
 
 function App() {
 
-  const theme = createMuiTheme({ palette });
+  const theme = createMuiTheme({
+    palette: themePalette,
+    overrides: themeOverrides,
+  });
 
   const [sessionState, setSessionState] = useState({ initialized: false });
 
   useEffect(() => {
     if (!sessionState.initialized) {
-      backend.updateSessionContext().then(resp => {
+      backend.liveUpdateSessionContext(resp => {
         setSessionState(() => ({
           initialized: true,
           authorizedUser: resp.authorizedUser || false,

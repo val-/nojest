@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
+import { ReactComponent as Logo } from '../assets/logo.svg';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -38,7 +39,14 @@ const useStyles = makeStyles(theme => ({
   signInButton: {
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(4),
-  }
+  },
+  logoBox: {
+    padding: theme.spacing(5)
+  },
+  logoIcon: {
+    display: 'block',
+    width: '320px',
+  },
 }));
 
 const LoginPage = props => {
@@ -90,7 +98,9 @@ const LoginPage = props => {
 
   return (
     <Box className={classes.root}>
-
+      <Box className={classes.logoBox}>
+        <Logo className={classes.logoIcon} />
+      </Box>
       <Paper square>
         <form
           className={classes.form}

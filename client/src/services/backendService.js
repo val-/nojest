@@ -1,21 +1,30 @@
 export const backendService = {
-    updateSessionContext,
+    liveUpdateSessionContext,
     getSessionContext,
     login,
     logout,
     registration,
     activation,
+    updateProfile,
 };
 
 let sessionContextState;
+let liveUpdateSessionContextListener = () => {};
+
+function liveUpdateSessionContext(cb) {
+    liveUpdateSessionContextListener = cb;
+    if (!sessionContextState) {
+        updateSessionContext();
+    }
+}
 
 function updateSessionContext() {
-    return new Promise((resolve, reject) => {
-        fetchJSON('/api/session-context').then(resp => {
-            sessionContextState = resp;
-            resolve(resp);
-        }, reject)
-    });
+    return fetchJSON('/api/session-context').then(resp => {
+        sessionContextState = resp;
+        liveUpdateSessionContextListener(resp);
+    }, () => {
+        liveUpdateSessionContextListener(false);
+    })
 }
 
 function getSessionContext() {
@@ -36,6 +45,19 @@ function registration(params) {
 
 function activation(token) {
     return fetchJSON('/api/activation', 'POST', { token });
+}
+
+function updateProfile(params) {
+    return new Promise((resolve, reject) => {
+        fetchJSON('/api/update-profile', 'POST', params).then(
+            resp => {
+                updateSessionContext().then(() => {
+                    resolve(resp);
+                }, reject);
+            },
+            reject
+        );
+    });
 }
 
 function fetchJSON(url, method = 'GET', params = {}) {

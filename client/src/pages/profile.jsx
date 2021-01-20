@@ -21,6 +21,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import Rating from '@material-ui/lab/Rating';
+import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/styles';
 import MainLayout from '../components/mainLayout';
 import ScreenLocker from '../components/screenLocker';
@@ -62,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   form: {
     paddingTop: theme.spacing(5),
   },
+  alert: {
+    margin: theme.spacing(2, 0),
+  },
   formRow: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -100,17 +104,66 @@ const ProfilePage = props => {
         values: {
           fullName: authorizedUser.fullName,
           email: authorizedUser.email,
-          phone: authorizedUser.phone || '',
+          phoneNumber: authorizedUser.phoneNumber || '',
           dateOfBirth: authorizedUser.dateOfBirth || null,
-          gender: authorizedUser.gender || null,
-          country: authorizedUser.country || null,
-          city: authorizedUser.city || null,
+          gender: authorizedUser.gender || '',
+          country: authorizedUser.country || '',
+          city: authorizedUser.city || '',
         },
       }));
     }
   }, [formState]);
 
   const handleDelete = () => {};
+
+  const handleUpdateProfile = event => {
+    event.preventDefault();
+    setFormState(formState => ({
+      ...formState,
+      initialized: false,
+      error: false,
+    }));
+    backend.updateProfile(formState.values).then(
+      handleSuccess,
+      handleError,
+    );
+  };
+
+  const handleSuccess = () => {
+    setFormState(formState => ({
+      ...formState,
+      initialized: true,
+    }));
+  };
+
+  const handleError = err => {
+    setFormState(formState => ({
+      ...formState,
+      error: err,
+      initialized: true,
+    }));
+  };
+
+  const handleChange = event => {
+    event.persist();
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]: event.target.value,
+      },
+    }));
+  };
+
+  const handleDateOfBirthChange = (newDate, newValue) => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        dateOfBirth: newValue,
+      },
+    }));
+  };
 
   const generateAvatar = () => {
     if (formState.avatar) {
@@ -187,13 +240,23 @@ const ProfilePage = props => {
           </Typography>
           <form
             className={classes.form}
+            onSubmit={handleUpdateProfile}
           >
+            { formState.error &&
+              <Alert
+                severity="error"
+                className={classes.alert}
+              >
+                {formState.error}
+              </Alert>
+            }
             <TextField
               className={classes.textField}
               fullWidth
               label="Full name"
               name="fullName"
               type="text"
+              onChange={handleChange}
               value={formState.values.fullName || ''}
             />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -203,6 +266,7 @@ const ProfilePage = props => {
                     label="Date of birth"
                     format="dd.MM.yyyy"
                     value={formState.values.dateOfBirth}
+                    onChange={handleDateOfBirthChange}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -212,7 +276,9 @@ const ProfilePage = props => {
                     <Select
                       labelId="gender-select-label"
                       id="gender-select"
+                      name="gender"
                       className={classes.select}
+                      onChange={handleChange}
                       value={formState.values.gender}
                     >
                       <MenuItem value={'MALE'}>Male</MenuItem>
@@ -227,15 +293,17 @@ const ProfilePage = props => {
               label="Email address"
               name="email"
               type="text"
-              value={formState.values.email || ''}
+              disabled
+              value={formState.values.email}
             />
             <TextField
               className={classes.textField}
               fullWidth
               label="Phone number"
-              name="phone"
+              name="phoneNumber"
               type="text"
-              value={formState.values.phone || ''}
+              onChange={handleChange}
+              value={formState.values.phoneNumber}
             />
             <Box className={classes.formRow}>
               <FormControl className={classes.formControlSelect}>
@@ -243,7 +311,9 @@ const ProfilePage = props => {
                 <Select
                   labelId="country-select-label"
                   id="country-select"
+                  name="country"
                   className={classes.select}
+                  onChange={handleChange}
                   value={formState.values.country}
                 >
                   <MenuItem value={'RU'}>Russian Federation</MenuItem>
@@ -256,7 +326,9 @@ const ProfilePage = props => {
                 <Select
                   labelId="city-select-label"
                   id="city-select"
+                  name="city"
                   className={classes.select}
+                  onChange={handleChange}
                   value={formState.values.city}
                 >
                   <MenuItem value={'MOW'}>Moscow</MenuItem>
