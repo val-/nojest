@@ -5,7 +5,7 @@ create type task_status_type as enum ('REQUEST', 'WORK', 'DONE', 'CANCELLED');
 create table "user"(
     id serial primary key,
     name varchar(255),
-    phone varchar(30),
+    phone_number varchar(30),
     email varchar(255),
     email_confirmed boolean,
     password_hash varchar(255),

@@ -7,7 +7,7 @@
 ## Users table
 * id
 * name
-* phone
+* phone_number
 * email
 * email_confirmed
 * password_hash
