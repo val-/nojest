@@ -155,12 +155,12 @@ const ProfilePage = props => {
     }));
   };
 
-  const handleDateOfBirthChange = (newDate, newValue) => {
+  const handleDateOfBirthChange = newDate => {
     setFormState(formState => ({
       ...formState,
       values: {
         ...formState.values,
-        dateOfBirth: newValue,
+        dateOfBirth: newDate,
       },
     }));
   };

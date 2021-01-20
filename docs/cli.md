@@ -10,3 +10,9 @@ sudo docker run --rm --name nojest -p 5432:5432 nojest
 
 # Подключиться к базе данных через psql
 sudo psql -h localhost -p 5432 -d nojest -U nojest --password
+
+# Сделать дамп данных
+sudo docker exec -t nojest pg_dumpall -c -U nojest > dump_nojest.sql
+
+# Накатить дамп на базу
+cat dump_nojest.sql | sudo docker exec -i nojest psql -U nojest

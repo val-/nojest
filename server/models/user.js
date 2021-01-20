@@ -17,6 +17,8 @@ const validateUserData = (data) => new Promise((resolve, reject) => {
 const validateProfileData = (data) => new Promise((resolve, reject) => {
     if (!data.email) {
         reject('email missing')
+    } else if (!data.fullName) {
+        reject('Full name missing')
     } else {
         resolve();
     }
@@ -92,14 +94,22 @@ const verifyPassword = (password, user) => new Promise(function(resolve, reject)
 });
 
 const generateUserProfile = user => new Promise(function(resolve, reject) {
-    resolve({
+    const profile = {
         id: user.id,
         email: user.email,
         fullName: user.full_name,
         dateOfBirth: user.date_of_birth,
-        gender: user.gender,
+        country: user.country,
+        city: user.city,
         avatar: user.avatar,
-    });
+    };
+    if (user.gender !== 'NONE') {
+        profile.gender = user.gender;
+    }
+    if (user.phone_number !== 'NULL') {
+        profile.phoneNumber = user.phone_number;
+    }
+    resolve(profile);
 });
 
 module.exports = {
@@ -136,21 +146,31 @@ module.exports = {
             gender,
             dateOfBirth,
             phoneNumber,
+            country,
+            city,
         } = data;
-        const dateOfBirthObj = moment(
-            dateOfBirth,
-            'DD.MM.YYYY'
-        ).toDate();
+        const dateOfBirthObj = new Date(dateOfBirth);
+        console.log('phoneNumber: ', phoneNumber);
         validateProfileData(data).then(() => db.query(
             `
                 UPDATE nj_user
                 SET full_name = $2,
                 gender = $3,
+                date_of_birth = $4,
                 phone_number = $5,
-                date_of_birth = $4
+                country = $6,
+                city = $7
                 WHERE email = $1
             `,
-            [ email, fullName, gender, dateOfBirthObj, phoneNumber ]
+            [
+                email,
+                fullName,
+                gender || 'NONE',
+                dateOfBirthObj || 'NULL',
+                phoneNumber || 'NULL',
+                country || 'NULL',
+                city || 'NULL',
+            ]
         )).then(() => {
             findUserByEmail(email).then(user => {
                 resolve(generateUserProfile(user));
