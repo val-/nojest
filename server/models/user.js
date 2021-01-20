@@ -1,6 +1,7 @@
 const db = require('./../config/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const moment = require('moment');
 const activationLinkLetter = require('../letters/activationLink');
 
 const validateUserData = (data) => new Promise((resolve, reject) => {
@@ -10,6 +11,14 @@ const validateUserData = (data) => new Promise((resolve, reject) => {
         validatePassword(data.password).then(
             () => validateEmail(data.email)
         ).then(resolve).catch(reject);
+    }
+});
+
+const validateProfileData = (data) => new Promise((resolve, reject) => {
+    if (!data.email) {
+        reject('email missing')
+    } else {
+        resolve();
     }
 });
 
@@ -118,6 +127,35 @@ module.exports = {
             data.email,
             `${siteUrl}/activation/${token}`
         )).then(resolve).catch(reject);
+    }),
+
+    update: (data) => new Promise((resolve, reject) => {
+        const {
+            email,
+            fullName,
+            gender,
+            dateOfBirth,
+            phoneNumber,
+        } = data;
+        const dateOfBirthObj = moment(
+            dateOfBirth,
+            'DD.MM.YYYY'
+        ).toDate();
+        validateProfileData(data).then(() => db.query(
+            `
+                UPDATE nj_user
+                SET full_name = $2,
+                gender = $3,
+                phone_number = $5,
+                date_of_birth = $4
+                WHERE email = $1
+            `,
+            [ email, fullName, gender, dateOfBirthObj, phoneNumber ]
+        )).then(() => {
+            findUserByEmail(email).then(user => {
+                resolve(generateUserProfile(user));
+            }, reject)
+        }).catch(reject);
     }),
 
     activation: (token) => new Promise((resolve, reject) => {
