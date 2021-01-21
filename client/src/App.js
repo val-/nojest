@@ -14,6 +14,7 @@ import RegistrationPage from './pages/registration';
 import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
 import ProfileActivationPage from './pages/profileActivation';
+import DashboardPage from './pages/dashboard';
 import themePalette from './themePalette';
 import themeOverrides from './themeOverrides';
 import { backendService as backend } from './services/backendService';
@@ -76,7 +77,10 @@ function App() {
               <ProfileActivationPage />
             </UnauthorizedRoute>
             <PrivateRoute exact path="/">
-              <Redirect to="/profile" />
+              <Redirect to="/dashboard" />
+            </PrivateRoute>
+            <PrivateRoute exact path="/dashboard">
+              <DashboardPage />
             </PrivateRoute>
             <PrivateRoute exact path="/profile">
               <ProfilePage />
