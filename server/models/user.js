@@ -1,10 +1,9 @@
 const db = require('./../config/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const moment = require('moment');
 const activationLinkLetter = require('../letters/activationLink');
 
-const validateUserData = (data) => new Promise((resolve, reject) => {
+const validateUserData = data => new Promise((resolve, reject) => {
     if (!data.password || !data.email) {
         reject('email and/or password missing')
     } else {
@@ -14,7 +13,7 @@ const validateUserData = (data) => new Promise((resolve, reject) => {
     }
 });
 
-const validateProfileData = (data) => new Promise((resolve, reject) => {
+const validateProfileData = data => new Promise((resolve, reject) => {
     if (!data.email) {
         reject('email missing')
     } else if (!data.fullName) {
@@ -24,7 +23,7 @@ const validateProfileData = (data) => new Promise((resolve, reject) => {
     }
 });
 
-const validateEmail = (email) => new Promise((resolve, reject) => {
+const validateEmail = email => new Promise((resolve, reject) => {
     if (typeof (email) !== 'string') {
         reject('email must be a string');
     } else {
@@ -37,7 +36,7 @@ const validateEmail = (email) => new Promise((resolve, reject) => {
     }
 });
 
-const validatePassword = (password) => new Promise((resolve, reject) => {
+const validatePassword = password => new Promise((resolve, reject) => {
     if (typeof (password) !== 'string') {
         reject('password must be a string');
     } else if (password.length < 6) {
@@ -47,7 +46,7 @@ const validatePassword = (password) => new Promise((resolve, reject) => {
     }
 });
 
-const hashPassword = (password) => new Promise((resolve, reject) => {
+const hashPassword = password => new Promise((resolve, reject) => {
     bcrypt.genSalt(10, (err, salt) => {
         if (err) {
             reject(err);
@@ -63,7 +62,7 @@ const hashPassword = (password) => new Promise((resolve, reject) => {
     });
 });
 
-const findUserByEmail = (email) => new Promise(function(resolve, reject) {
+const findUserByEmail = email => new Promise(function(resolve, reject) {
     db.query(
         'SELECT * FROM nj_user WHERE email = $1',
         [email]
