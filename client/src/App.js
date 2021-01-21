@@ -77,9 +77,6 @@ function App() {
               <ProfileActivationPage />
             </UnauthorizedRoute>
             <PrivateRoute exact path="/">
-              <Redirect to="/dashboard" />
-            </PrivateRoute>
-            <PrivateRoute exact path="/dashboard">
               <DashboardPage />
             </PrivateRoute>
             <PrivateRoute exact path="/profile">
