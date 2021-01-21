@@ -9,24 +9,24 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
-create table nj_language(
-    code varchar(2) primary key,
+CREATE TABLE nj_language(
+    code varchar(2) PRIMARY KEY,
     title varchar(30)
 );
 
 INSERT INTO nj_language (code, title) VALUES ('RU', 'Russian');
 INSERT INTO nj_language (code, title) VALUES ('EN', 'English');
 
-create type nj_gender_type as enum ('MALE', 'FEMALE', 'NONE');
+CREATE TYPE nj_gender_type AS ENUM ('MALE', 'FEMALE', 'NONE');
 
-create table nj_user(
-    id serial primary key,
+CREATE TABLE nj_user(
+    id SERIAL PRIMARY KEY,
     full_name varchar(255),
     phone_number varchar(30),
-    email varchar(255) not null unique,
+    email varchar(255) NOT NULL UNIQUE,
     email_confirmed boolean,
     email_confirm_token varchar(64),
-    password_hash varchar(64) not null,
+    password_hash varchar(64) NOT NULL,
     date_of_birth date,
     gender nj_gender_type,
     country varchar(4),
@@ -34,12 +34,12 @@ create table nj_user(
     avatar text
 );
 
-create table nj_order(
-    id serial primary key,
-    author_id integer references nj_user(id),
+CREATE TABLE nj_order(
+    id SERIAL PRIMARY KEY,
+    author_id integer REFERENCES nj_user(id),
     title varchar(255),
     platform varchar(8),
-    language_code varchar(2) references nj_language(code),
+    language_code varchar(2) REFERENCES nj_language(code),
     description text,
     expected_price money,
     deadline date
