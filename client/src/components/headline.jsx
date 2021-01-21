@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
     width: '150px',
   },
   logoutBox: {
+    display: 'block',
     padding: theme.spacing(1),
     cursor: 'pointer',
   },
@@ -48,9 +49,9 @@ const Headline = () => {
   return (
     <AppBar>
       <Toolbar className={classes.row}>
-        <Box className={classes.logoBox}>
+        <a href="/" className={classes.logoBox}>
           <Logo className={classes.logoIcon} />
-        </Box>
+        </a>
         <Box className={classes.logoutBoxAndSwitcher}>
           <Box className={classes.logoutBox} onClick={handleLogout}>
             <InputIcon className={classes.logoutIcon} />
