@@ -5,6 +5,7 @@ const client = new Client({ connectionString });
 client.connect();
 
 module.exports = {
+    connectionString,
     query: (text, values) => new Promise(function(resolve, reject) {
         client.query(text, values, (err, result) => {
             if (err) {

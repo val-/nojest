@@ -1,15 +1,24 @@
 const express = require('express');
 const session = require('express-session');
+const pg = require('pg');
+const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
 
 const port = 8080;
 const apiRoutes = require('./api/routes');
+const { connectionString } = require('./config/database');
 
 const app = express();
 
 app.use('/', express.static('./client/build'));
 
+const pgPool = new pg.Pool({ connectionString });
+
 app.use(session({
+    store: new pgSession({
+        pool: pgPool,
+        tableName: 'session',
+    }),
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,

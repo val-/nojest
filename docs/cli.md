@@ -8,8 +8,10 @@ sudo docker build -t nojest .
 # Запустить контейнер
 sudo docker run --rm --name nojest -p 5432:5432 nojest
 
+# Открыть bash терминал в контеёнере
+docker exec -it nojest bash
 # Подключиться к базе данных через psql
-sudo psql -h localhost -p 5432 -d nojest -U nojest --password
+psql -h localhost -p 5432 -d nojest -U nojest --password
 
 # Сделать дамп данных
 sudo docker exec -t nojest pg_dumpall -c -U nojest > dump_nojest.sql
