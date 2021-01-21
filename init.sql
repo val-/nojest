@@ -9,6 +9,14 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
+create table nj_language(
+    code varchar(2) primary key,
+    title varchar(30)
+);
+
+INSERT INTO nj_language (code, title) VALUES ('RU', 'Russian');
+INSERT INTO nj_language (code, title) VALUES ('EN', 'English');
+
 create type nj_gender_type as enum ('MALE', 'FEMALE', 'NONE');
 
 create table nj_user(
@@ -24,6 +32,17 @@ create table nj_user(
     country varchar(4),
     city varchar(4),
     avatar text
+);
+
+create table nj_order(
+    id serial primary key,
+    author_id integer references nj_user(id),
+    title varchar(255),
+    platform varchar(8),
+    language_code varchar(2) references nj_language(code),
+    description text,
+    expected_price money,
+    deadline date
 );
 
 COPY public.nj_user (id, full_name, phone_number, email, email_confirmed, email_confirm_token, password_hash, date_of_birth, gender, country, city, avatar) FROM stdin;
