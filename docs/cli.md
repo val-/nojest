@@ -8,7 +8,7 @@ sudo docker build -t nojest .
 # Запустить контейнер
 sudo docker run --rm --name nojest -p 5432:5432 nojest
 
-# Открыть bash терминал в контеёнере
+# Открыть bash терминал в контейнере
 docker exec -it nojest bash
 # Подключиться к базе данных через psql
 psql -h localhost -p 5432 -d nojest -U nojest --password
