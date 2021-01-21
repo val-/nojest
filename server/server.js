@@ -17,7 +17,7 @@ const pgPool = new pg.Pool({ connectionString });
 app.use(session({
     store: new pgSession({
         pool: pgPool,
-        tableName: 'session',
+        tableName: 'nj_session',
     }),
     secret: 'keyboard cat',
     resave: false,
