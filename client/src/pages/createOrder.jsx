@@ -9,7 +9,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -17,6 +16,8 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
+import MainLayout from '../components/mainLayout';
+import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,9 +44,6 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginBottom: theme.spacing(4),
-  },
-  form: {
-    paddingTop: theme.spacing(5),
   },
   formRow: {
     display: 'flex',
@@ -77,12 +75,16 @@ const CreateOrderPage = props => {
 
   const classes = useStyles();
 
-  const [formState, setFormState] = useState({ values: {
+  const mock = {"title":"Забрнировать билет на самолёт через сайт websky","description":"Пожалуйста, выполните эти действия:\n\n0. Откройте в браузере https://tst.sirena-travel.ru/websky-test-grt/\n1. Поищите билеты из Москвы в Сочи\n2. Выберите тариф лайт\n3. Перейдите к вводу данных пассажира\n4. Введите данные пассажира и переходите на следующий шаг\n5. Выберите оплату наличными и создайте заказ\n6. Напишите номер заказа\n\nВ процессе выполнения размышляйте вслух и проговаривайте все возникающие сложности.\n","platform":"web","language":"RU","deadline":"2021-12-11T21:00:00.000Z","expectedPrice":"500"};
+  const defaultValues = {
     title: '',
     description: '',
-    platform: 'web',
-    language: 'RU'
-  } });
+    platform: '',
+    language: '',
+    deadline: null,
+  };
+
+  const [formState, setFormState] = useState({ values: mock });
 
   useEffect(() => {
     setFormState(formState => ({
@@ -90,101 +92,148 @@ const CreateOrderPage = props => {
     }));
   }, [formState.values]);
 
+  const handleChange = event => {
+    event.persist();
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]: event.target.value,
+      },
+    }));
+  };
+
+  const handleDeadlineChange = newDate => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        deadline: newDate,
+      },
+    }));
+  };
+
+  const setErrorState = error => {
+    setFormState(formState => ({
+      ...formState,
+      error: false,
+    }));
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    setErrorState(false);
+    backend.createOrder(formState.values).then(
+      handleSuccess,
+      setErrorState,
+    );
+  };
+
+  const handleSuccess = resp => {
+    console.log('handleSuccess: ', resp);
+  };
 
   return (
-    <Box className={classes.root}>
-      <Paper square className={classes.paper}>
-        <Typography variant="h3">
-          New order
-        </Typography>
-        <form
-          className={classes.form}
-        >
-          <TextField
-            className={classes.textField}
-            fullWidth
-            label="Title"
-            name="title"
-            type="text"
-            value={formState.values.title || ''}
-          />
-          <TextField
-            className={classes.textField}
-            fullWidth
-            label="Description"
-            name="description"
-            multiline
-            type="text"
-            value={formState.values.description || ''}
-          />
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Box className={classes.formRow}>
-              <Box className={classes.formCellHalf}>
-                <TextField
-                  className={classes.textFieldInRow}
-                  fullWidth
-                  label="Expected price"
-                  name="expectedPrice"
-                  multiline
-                  type="text"
-                  value={formState.values.expectedPrice || ''}
+    <MainLayout>
+      <Box className={classes.root}>
+        <Paper square className={classes.paper}>
+          <form
+            className={classes.form}
+            onSubmit={handleSubmit}
+          >
+            <TextField
+              className={classes.textField}
+              fullWidth
+              label="New order"
+              name="title"
+              type="text"
+              value={formState.values.title || ''}
+              onChange={handleChange}
+            />
+            <TextField
+              className={classes.textField}
+              fullWidth
+              label="Description"
+              name="description"
+              multiline
+              type="text"
+              value={formState.values.description || ''}
+              onChange={handleChange}
+            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Box className={classes.formRow}>
+                <Box className={classes.formCellHalf}>
+                  <TextField
+                    className={classes.textFieldInRow}
+                    fullWidth
+                    label="Expected price"
+                    name="expectedPrice"
+                    type="number"
+                    value={formState.values.expectedPrice || ''}
+                    onChange={handleChange}
+                  />
+                </Box>
+                <KeyboardDatePicker
+                  className={classes.datePicker}
+                  label="Deadline"
+                  format="dd.MM.yyyy"
+                  value={formState.values.deadline}
+                  onChange={handleDeadlineChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 />
               </Box>
-              <KeyboardDatePicker
-                className={classes.datePicker}
-                label="Timelimit"
-                format="dd.MM.yyyy"
-                value={formState.values.timelimit}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
+            </MuiPickersUtilsProvider>
+            <Box className={classes.formRow}>
+              <FormControl className={classes.formControlSelect}>
+                <InputLabel id="language-select-label">Target language</InputLabel>
+                <Select
+                  labelId="language-select-label"
+                  id="language-select"
+                  className={classes.select}
+                  name="language"
+                  value={formState.values.language}
+                  onChange={handleChange}
+                >
+                  <MenuItem value={'RU'}>Russian</MenuItem>
+                  <MenuItem value={'EN'}>English</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControlSelect}>
+                <InputLabel id="platform-select-label">Target platform</InputLabel>
+                <Select
+                  labelId="platform-select-label"
+                  id="platform-select"
+                  className={classes.select}
+                  name="platform"
+                  value={formState.values.platform}
+                  onChange={handleChange}
+                >
+                  <MenuItem value={'ios'}>IOS</MenuItem>
+                  <MenuItem value={'android'}>Android</MenuItem>
+                  <MenuItem value={'tv'}>TV</MenuItem>
+                  <MenuItem value={'mac'}>Mac</MenuItem>
+                  <MenuItem value={'pc'}>PC</MenuItem>
+                  <MenuItem value={'web'}>Web</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
-          </MuiPickersUtilsProvider>
-          <Box className={classes.formRow}>
-            <FormControl className={classes.formControlSelect}>
-              <InputLabel id="language-select-label">Target language</InputLabel>
-              <Select
-                labelId="language-select-label"
-                id="language-select"
-                className={classes.select}
-                value={formState.values.language}
+            <Box className={classes.formRowButtons}>
+              <Button
+                className={classes.saveButton}
+                color="primary"
+                size="large"
+                type="submit"
+                variant="contained"
               >
-                <MenuItem value={'RU'}>Russian</MenuItem>
-                <MenuItem value={'EN'}>English</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl className={classes.formControlSelect}>
-              <InputLabel id="platform-select-label">Target platform</InputLabel>
-              <Select
-                labelId="platform-select-label"
-                id="platform-select"
-                className={classes.select}
-                value={formState.values.platform}
-              >
-                <MenuItem value={'ios'}>IOS</MenuItem>
-                <MenuItem value={'android'}>Android</MenuItem>
-                <MenuItem value={'tv'}>TV</MenuItem>
-                <MenuItem value={'mac'}>Mac</MenuItem>
-                <MenuItem value={'pc'}>PC</MenuItem>
-                <MenuItem value={'web'}>Web</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box className={classes.formRowButtons}>
-            <Button
-              className={classes.saveButton}
-              color="primary"
-              size="large"
-              type="submit"
-              variant="contained"
-            >
-              Create order
-            </Button>
-          </Box>
-        </form>
-      </Paper>
-    </Box>
+                Create order
+              </Button>
+            </Box>
+          </form>
+        </Paper>
+      </Box>
+    </MainLayout>
   );
 
 };

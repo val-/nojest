@@ -5,6 +5,7 @@ export const backendService = {
     logout,
     registration,
     activation,
+    createOrder,
     updateProfile,
     uploadAvatar,
 };
@@ -46,6 +47,10 @@ function registration(params) {
 
 function activation(token) {
     return fetchJSON('/api/activation', 'POST', { token });
+}
+
+function createOrder(params) {
+    return fetchJSON('/api/create-order', 'POST', params)
 }
 
 function updateProfile(params) {
