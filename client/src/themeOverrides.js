@@ -5,6 +5,9 @@ const overrides = {
     containedPrimary: {
       backgroundColor: themePalette.primary.light,
     },
+    label: {
+      fontWeight: 'bold',
+    }
   },
 };
 

@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/styles';
+import { useHistory } from 'react-router-dom';
 import MainLayout from '../components/mainLayout';
 
 const useStyles = makeStyles(theme => ({
@@ -28,11 +29,16 @@ const useStyles = makeStyles(theme => ({
 const DashboardPage = props => {
 
   const classes = useStyles();
+  const history = useHistory();
+
+  const openPage = code => {
+    history.push(`/${code}`);
+  }
 
   return (
     <MainLayout>
       <Card className={classes.card}>
-        <CardActionArea>
+        <CardActionArea onClick={() => { openPage('create-order'); }}>
           <CardMedia className={classes.media} title="New order">
             <img src="static/images/clip/order.jpg" alt="New order"/>
           </CardMedia>
@@ -48,13 +54,13 @@ const DashboardPage = props => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={() => { openPage('create-order'); }}>
             New order
           </Button>
         </CardActions>
       </Card>
       <Card className={classes.card}>
-        <CardActionArea>
+        <CardActionArea onClick={() => { openPage('create-order'); }}>
           <CardMedia className={classes.media} title="Let`s get working">
             <img src="static/images/clip/work.jpg" alt="Let`s get working"/>
           </CardMedia>
@@ -70,13 +76,13 @@ const DashboardPage = props => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={() => { openPage('create-order'); }}>
             View orders
           </Button>
         </CardActions>
       </Card>
       <Card className={classes.card}>
-        <CardActionArea>
+        <CardActionArea onClick={() => { openPage('create-order'); }}>
           <CardMedia className={classes.media} title="New order">
             <img src="static/images/clip/create.jpg" alt="New order"/>
           </CardMedia>
@@ -92,7 +98,7 @@ const DashboardPage = props => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={() => { openPage('create-order'); }}>
             New task
           </Button>
         </CardActions>
