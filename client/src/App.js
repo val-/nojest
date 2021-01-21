@@ -55,7 +55,7 @@ function App() {
       if (!sessionState.authorizedUser) {
         return children;
       } else {
-        return <Redirect to={{ pathname: '/profile', state: { from: location } }} />;
+        return <Redirect to={{ pathname: '/', state: { from: location } }} />;
       }
     }} />
   );

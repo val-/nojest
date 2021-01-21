@@ -2,10 +2,13 @@ import React from 'react';
 import {
   AppBar,
   Toolbar,
-  Box,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import InputIcon from '@material-ui/icons/Input';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useHistory } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { backendService as backend } from '../services/backendService';
 
@@ -22,23 +25,14 @@ const useStyles = makeStyles(theme => ({
     display: 'block',
     width: '150px',
   },
-  logoutBox: {
-    display: 'block',
-    padding: theme.spacing(1),
-    cursor: 'pointer',
-  },
-  logoutIcon: {
-    display: 'block'
-  },
-  logoutBoxAndSwitcher: {
-    display: 'flex',
-    alignItems: 'center',
-  },
 }));
 
 const Headline = () => {
 
   const classes = useStyles();
+  const history = useHistory();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
   const handleLogout = () => {
     backend.logout().then(() => {
@@ -46,17 +40,53 @@ const Headline = () => {
     });
   }
 
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openProfile = () => {
+    history.push('/profile');
+  };
+
   return (
     <AppBar>
       <Toolbar className={classes.row}>
         <a href="/" className={classes.logoBox}>
           <Logo className={classes.logoIcon} />
         </a>
-        <Box className={classes.logoutBoxAndSwitcher}>
-          <Box className={classes.logoutBox} onClick={handleLogout}>
-            <InputIcon className={classes.logoutIcon} />
-          </Box>
-        </Box>
+        <div className={classes.rightBox}>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={openProfile}>Profile</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
+        </div>
       </Toolbar>
     </AppBar>
   );
