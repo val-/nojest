@@ -33,9 +33,10 @@ module.exports = {
                     platform,
                     language_code,
                     expected_price,
-                    deadline
+                    deadline,
+                    status
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 returning id
             `,
             [
@@ -46,6 +47,7 @@ module.exports = {
                 data.language,
                 data.expectedPrice,
                 data.deadline,
+                'ACTIVE',
             ]
         ), reject).then(result => {
             if (
@@ -70,6 +72,7 @@ module.exports = {
             if (orderData) {
                 resolve({
                     id: orderData.id,
+                    authorId: orderData.author_id,
                     title: orderData.title,
                     description: orderData.description,
                     platform: orderData.platform,
@@ -82,6 +85,28 @@ module.exports = {
             }
         }, () => {
             reject({ error: 'Order not found' });
+        });
+    }),
+
+    getAllOrdersByUser: userId => new Promise((resolve, reject) => {
+        db.query(
+            'SELECT id, title, deadline, status FROM nj_order WHERE author_id = $1',
+            [userId]
+        ).then(result => {
+            if (result.rows.length) {
+                resolve(result.rows.map(
+                    orderData => ({
+                        id: orderData.id,
+                        title: orderData.title,
+                        deadline: orderData.deadline,
+                        status: orderData.status,
+                    })
+                ));
+            } else {
+                reject({ error: 'Orders not found' });
+            }
+        }, () => {
+            reject({ error: 'Orders not found' });
         });
     }),
 

@@ -17,6 +17,8 @@ CREATE TABLE nj_language(
 INSERT INTO nj_language (code, title) VALUES ('RU', 'Russian');
 INSERT INTO nj_language (code, title) VALUES ('EN', 'English');
 
+CREATE TYPE nj_order_status AS ENUM ('ACTIVE', 'INACTIVE');
+
 CREATE TYPE nj_gender_type AS ENUM ('MALE', 'FEMALE', 'NONE');
 
 CREATE TABLE nj_user(
@@ -42,7 +44,8 @@ CREATE TABLE nj_order(
     language_code varchar(2) REFERENCES nj_language(code),
     description text,
     expected_price integer,
-    deadline date
+    deadline date,
+    status nj_order_status
 );
 
 COPY public.nj_user (id, full_name, phone_number, email, email_confirmed, email_confirm_token, password_hash, date_of_birth, gender, country, city, avatar) FROM stdin;
