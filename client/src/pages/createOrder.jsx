@@ -16,6 +16,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
+import Alert from '@material-ui/lab/Alert';
 import MainLayout from '../components/mainLayout';
 import { backendService as backend } from '../services/backendService';
 
@@ -31,16 +32,6 @@ const useStyles = makeStyles(theme => ({
   paper: {
     width: theme.spacing(120),
     padding: theme.spacing(8),
-  },
-  avatar: {
-    width: theme.spacing(20),
-    height: theme.spacing(20),
-  },
-  ratingBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
   },
   textField: {
     marginBottom: theme.spacing(4),
@@ -66,16 +57,13 @@ const useStyles = makeStyles(theme => ({
   saveButton: {
     marginTop: theme.spacing(4),
   },
-  chipsBox: {
-    paddingTop: theme.spacing(2),
-  },
 }));
 
 const CreateOrderPage = props => {
 
   const classes = useStyles();
 
-  const mock = {"title":"Забрнировать билет на самолёт через сайт websky","description":"Пожалуйста, выполните эти действия:\n\n0. Откройте в браузере https://tst.sirena-travel.ru/websky-test-grt/\n1. Поищите билеты из Москвы в Сочи\n2. Выберите тариф лайт\n3. Перейдите к вводу данных пассажира\n4. Введите данные пассажира и переходите на следующий шаг\n5. Выберите оплату наличными и создайте заказ\n6. Напишите номер заказа\n\nВ процессе выполнения размышляйте вслух и проговаривайте все возникающие сложности.\n","platform":"web","language":"RU","deadline":"2021-12-11T21:00:00.000Z","expectedPrice":"500"};
+  const mock = {"title":"Забронировать билет на самолёт через сайт websky","description":"Пожалуйста, выполните эти действия:\n\n0. Откройте в браузере https://tst.sirena-travel.ru/websky-test-grt/\n1. Поищите билеты из Москвы в Сочи\n2. Выберите тариф лайт\n3. Перейдите к вводу данных пассажира\n4. Введите данные пассажира и переходите на следующий шаг\n5. Выберите оплату наличными и создайте заказ\n6. Напишите номер заказа\n\nВ процессе выполнения размышляйте вслух и проговаривайте все возникающие сложности.\n","platform":"web","language":"RU","deadline":"2021-12-11T21:00:00.000Z","expectedPrice":"500"};
   const defaultValues = {
     title: '',
     description: '',
@@ -116,7 +104,7 @@ const CreateOrderPage = props => {
   const setErrorState = error => {
     setFormState(formState => ({
       ...formState,
-      error: false,
+      error,
     }));
   };
 
@@ -141,6 +129,14 @@ const CreateOrderPage = props => {
             className={classes.form}
             onSubmit={handleSubmit}
           >
+            { formState.error &&
+              <Alert
+                severity="error"
+                className={classes.alert}
+              >
+                {formState.error}
+              </Alert>
+            }
             <TextField
               className={classes.textField}
               fullWidth
