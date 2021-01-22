@@ -17,6 +17,7 @@ import {
 } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/styles';
 import Alert from '@material-ui/lab/Alert';
+import { useHistory } from 'react-router-dom';
 import MainLayout from '../components/mainLayout';
 import { backendService as backend } from '../services/backendService';
 
@@ -62,6 +63,7 @@ const useStyles = makeStyles(theme => ({
 const CreateOrderPage = props => {
 
   const classes = useStyles();
+  const history = useHistory();
 
   const mock = {"title":"Забронировать билет на самолёт через сайт websky","description":"Пожалуйста, выполните эти действия:\n\n0. Откройте в браузере https://tst.sirena-travel.ru/websky-test-grt/\n1. Поищите билеты из Москвы в Сочи\n2. Выберите тариф лайт\n3. Перейдите к вводу данных пассажира\n4. Введите данные пассажира и переходите на следующий шаг\n5. Выберите оплату наличными и создайте заказ\n6. Напишите номер заказа\n\nВ процессе выполнения размышляйте вслух и проговаривайте все возникающие сложности.\n","platform":"web","language":"RU","deadline":"2021-12-11T21:00:00.000Z","expectedPrice":"500"};
   const defaultValues = {
@@ -118,7 +120,7 @@ const CreateOrderPage = props => {
   };
 
   const handleSuccess = resp => {
-    console.log('handleSuccess: ', resp);
+    history.push(`/order/${resp.orderId}`);
   };
 
   return (

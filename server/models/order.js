@@ -47,7 +47,18 @@ module.exports = {
                 data.expectedPrice,
                 data.deadline,
             ]
-        ), reject).then(resolve).catch(reject);
+        ), reject).then(result => {
+            if (
+                result &&
+                result.rows &&
+                result.rows[0] &&
+                result.rows[0].id
+            ) {
+                resolve(result.rows[0].id);
+            } else {
+                reject({ error: 'Order create error' });
+            }
+        }).catch(reject);
     }),
 
 };

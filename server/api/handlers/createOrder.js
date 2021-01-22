@@ -9,8 +9,11 @@ module.exports = (req, res) => {
         ...req.body,
         authorId,
         siteUrl,
-    }).then(() => {
-        res.json({ success: true });
+    }).then(orderId => {
+        res.json({
+            orderId, 
+            success: true,
+        });
     }).catch((error) => {
         res.json({ error });
     });
