@@ -1,36 +1,29 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import Box from '@material-ui/core/Box';
-
-const useStyles = makeStyles(theme => ({
-
-}));
+import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 
 function OrdersTableRow({ order }) {
 
-  const classes = useStyles();
-  const STATUSES_COLORS = {
-    '': '',
+  const history = useHistory();
+  const deadline = moment(order.deadline).fromNow();
+
+  const openOrder = () => {
+    history.push(`/order/${order.id}`);
   };
 
   return (
     <React.Fragment>
-      <TableRow>
+      <TableRow hover onClick={openOrder}>
         <TableCell>
-          {order.id}
+          { order.id }
         </TableCell>
         <TableCell>
-          {order.title}
+          { order.title }
         </TableCell>
         <TableCell>
-          {order.status}
-        </TableCell>
-        <TableCell>
-          <Box style={{ color: STATUSES_COLORS[order.status] }}>
-            {order.status}
-          </Box>
+          { deadline }
         </TableCell>
       </TableRow>
     </React.Fragment>

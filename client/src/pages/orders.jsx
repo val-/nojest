@@ -5,7 +5,6 @@ import {
   Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { useHistory } from 'react-router-dom';
 import MainLayout from '../components/mainLayout';
 import OrdersTable from '../components/ordersTable';
 import ScreenLocker from '../components/screenLocker';
@@ -22,14 +21,12 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     width: theme.spacing(120),
-    padding: theme.spacing(8),
   },
 }));
 
 const OrderPage = props => {
 
   const classes = useStyles();
-  const history = useHistory();
 
   const [initStartedState, setInitStarted] = useState(false);
   const [ordersReadyState, setOrdersReady] = useState(false);
@@ -54,11 +51,11 @@ const OrderPage = props => {
   return (
     <MainLayout>
       <Box className={classes.root}>
-        <Paper square className={classes.paper}>
+        <div className={classes.paper}>
             <OrdersTable
                 ordersList={ordersState}
             />
-        </Paper>
+        </div>
       </Box>
     </MainLayout>
   );

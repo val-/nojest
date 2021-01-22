@@ -37,7 +37,7 @@ const DashboardPage = props => {
 
   return (
     <MainLayout>
-      <Card className={classes.card}>
+      <Card square className={classes.card}>
         <CardActionArea onClick={() => { openPage('create-order'); }}>
           <CardMedia className={classes.media} title="New order">
             <img src="static/images/clip/order.jpg" alt="New order"/>
@@ -59,7 +59,7 @@ const DashboardPage = props => {
           </Button>
         </CardActions>
       </Card>
-      <Card className={classes.card}>
+      <Card square className={classes.card}>
         <CardActionArea onClick={() => { openPage('orders'); }}>
           <CardMedia className={classes.media} title="Let`s get working">
             <img src="static/images/clip/work.jpg" alt="Let`s get working"/>
@@ -81,7 +81,7 @@ const DashboardPage = props => {
           </Button>
         </CardActions>
       </Card>
-      <Card className={classes.card}>
+      <Card square className={classes.card}>
         <CardActionArea onClick={() => { openPage('create-order'); }}>
           <CardMedia className={classes.media} title="New order">
             <img src="static/images/clip/create.jpg" alt="New order"/>
