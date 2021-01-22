@@ -12,6 +12,7 @@ const uploadAvatar = require('./handlers/uploadAvatar');
 const createOrder = require('./handlers/createOrder');
 const getOrder = require('./handlers/getOrder');
 const getUserOrders = require('./handlers/getUserOrders');
+const getUserJobs = require('./handlers/getUserJobs');
 
 router.get('/session-context', jsonParser, sessionContext);
 router.post('/login', jsonParser, login);
@@ -22,6 +23,7 @@ router.post('/update-profile', jsonParser, updateProfile);
 router.post('/upload-avatar', jsonParser, uploadAvatar);
 router.post('/create-order', jsonParser, createOrder);
 router.get('/user-orders', getUserOrders);
+router.get('/user-jobs', getUserJobs);
 router.get('/order/:orderId', getOrder);
 
 module.exports = router;

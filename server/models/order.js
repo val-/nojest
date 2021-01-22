@@ -20,6 +20,13 @@ const validateOrderData = data => new Promise((resolve, reject) => {
     }
 });
 
+const generateOrderData = orderData => ({
+    id: orderData.id,
+    title: orderData.title,
+    deadline: orderData.deadline,
+    status: orderData.status,
+});
+
 module.exports = {
 
     create: data => new Promise((resolve, reject) => {
@@ -88,20 +95,28 @@ module.exports = {
         });
     }),
 
-    getAllOrdersByUser: userId => new Promise((resolve, reject) => {
+    getActualOrdersByUser: userId => new Promise((resolve, reject) => {
         db.query(
             'SELECT id, title, deadline, status FROM nj_order WHERE author_id = $1',
             [userId]
         ).then(result => {
             if (result.rows.length) {
-                resolve(result.rows.map(
-                    orderData => ({
-                        id: orderData.id,
-                        title: orderData.title,
-                        deadline: orderData.deadline,
-                        status: orderData.status,
-                    })
-                ));
+                resolve(result.rows.map(generateOrderData));
+            } else {
+                reject({ error: 'Orders not found' });
+            }
+        }, () => {
+            reject({ error: 'Orders not found' });
+        });
+    }),
+
+    getActualJobsByUser: userId => new Promise((resolve, reject) => {
+        db.query(
+            'SELECT id, title, deadline, status FROM nj_order WHERE author_id != $1',
+            [userId]
+        ).then(result => {
+            if (result.rows.length) {
+                resolve(result.rows.map(generateOrderData));
             } else {
                 reject({ error: 'Orders not found' });
             }
