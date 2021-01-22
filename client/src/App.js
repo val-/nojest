@@ -15,6 +15,7 @@ import ProfilePage from './pages/profile';
 import CreateOrderPage from './pages/createOrder';
 import ProfileActivationPage from './pages/profileActivation';
 import DashboardPage from './pages/dashboard';
+import OrdersPage from './pages/orders';
 import OrderPage from './pages/order';
 import themePalette from './themePalette';
 import themeOverrides from './themeOverrides';
@@ -85,6 +86,9 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/create-order">
               <CreateOrderPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/orders">
+              <OrdersPage />
             </PrivateRoute>
             <PrivateRoute exact path="/order/:orderId">
               <OrderPage />
