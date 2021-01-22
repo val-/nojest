@@ -10,10 +10,7 @@ module.exports = (req, res) => {
         authorId,
         siteUrl,
     }).then(orderId => {
-        res.json({
-            orderId, 
-            success: true,
-        });
+        res.json({ orderId });
     }).catch((error) => {
         res.json({ error });
     });

@@ -41,7 +41,7 @@ CREATE TABLE nj_order(
     platform varchar(8),
     language_code varchar(2) REFERENCES nj_language(code),
     description text,
-    expected_price money,
+    expected_price integer,
     deadline date
 );
 

@@ -61,4 +61,28 @@ module.exports = {
         }).catch(reject);
     }),
 
+    get: orderId => new Promise((resolve, reject) => {
+        db.query(
+            'SELECT * FROM nj_order WHERE id = $1',
+            [orderId]
+        ).then(result => {
+            const orderData = result.rows[0];
+            if (orderData) {
+                resolve({
+                    id: orderData.id,
+                    title: orderData.title,
+                    description: orderData.description,
+                    platform: orderData.platform,
+                    language: orderData.language_code,
+                    deadline: orderData.deadline,
+                    expectedPrice: `${orderData.expected_price}`,
+                });
+            } else {
+                reject({ error: 'Order not found' });
+            }
+        }, () => {
+            reject({ error: 'Order not found' });
+        });
+    }),
+
 };
