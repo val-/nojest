@@ -8,6 +8,7 @@ export const backendService = {
     createOrder,
     getOrder,
     getUserOrdersList,
+    getUserJobsList,
     updateProfile,
     uploadAvatar,
 };
@@ -61,6 +62,10 @@ function getOrder(orderId) {
 
 function getUserOrdersList() {
     return fetchJSON('/api/user-orders')
+}
+
+function getUserJobsList() {
+    return fetchJSON('/api/user-jobs')
 }
 
 function updateProfile(params) {

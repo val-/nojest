@@ -82,7 +82,7 @@ const DashboardPage = props => {
         </CardActions>
       </Card>
       <Card square className={classes.card}>
-        <CardActionArea onClick={() => { openPage('create-order'); }}>
+        <CardActionArea onClick={() => { openPage('jobs'); }}>
           <CardMedia className={classes.media} title="New order">
             <img src="static/images/clip/create.jpg" alt="New order"/>
           </CardMedia>
@@ -98,7 +98,7 @@ const DashboardPage = props => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary" onClick={() => { openPage('create-order'); }}>
+          <Button size="small" color="primary" onClick={() => { openPage('jobs'); }}>
             New task
           </Button>
         </CardActions>

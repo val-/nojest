@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const OrderPage = props => {
+const JobsPage = props => {
 
   const classes = useStyles();
 
@@ -37,7 +37,7 @@ const OrderPage = props => {
   useEffect(() => {
     if (!initStartedState) {
         setInitStarted(true);
-        backend.getUserOrdersList().then(resp => {
+        backend.getUserJobsList().then(resp => {
             setOrders(resp);
             setOrdersReady(true);
         }, setError);
@@ -70,4 +70,4 @@ const OrderPage = props => {
 
 };
 
-export default OrderPage;
+export default JobsPage;
