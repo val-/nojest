@@ -65,7 +65,7 @@ module.exports = {
             ) {
                 resolve(result.rows[0].id);
             } else {
-                reject({ error: 'Order create error' });
+                reject('Order create error');
             }
         }).catch(reject);
     }),
@@ -88,10 +88,10 @@ module.exports = {
                     expectedPrice: `${orderData.expected_price}`,
                 });
             } else {
-                reject({ error: 'Order not found' });
+                reject('Order not found');
             }
         }, () => {
-            reject({ error: 'Order not found' });
+            reject('Order not found');
         });
     }),
 
@@ -100,13 +100,13 @@ module.exports = {
             'SELECT id, title, deadline, status FROM nj_order WHERE author_id = $1',
             [userId]
         ).then(result => {
-            if (result.rows.length) {
+            if (result.rows) {
                 resolve(result.rows.map(generateOrderData));
             } else {
-                reject({ error: 'Orders not found' });
+                reject('Orders not found');
             }
         }, () => {
-            reject({ error: 'Orders not found' });
+            reject('Orders not found');
         });
     }),
 
@@ -115,13 +115,13 @@ module.exports = {
             'SELECT id, title, deadline, status FROM nj_order WHERE author_id != $1',
             [userId]
         ).then(result => {
-            if (result.rows.length) {
+            if (result.rows) {
                 resolve(result.rows.map(generateOrderData));
             } else {
-                reject({ error: 'Orders not found' });
+                reject('Orders not found');
             }
         }, () => {
-            reject({ error: 'Orders not found' });
+            reject('Orders not found');
         });
     }),
 
