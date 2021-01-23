@@ -14,13 +14,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, showHeadLine = true }) => {
 
     const classes = useStyles();
 
     return (
       <Box className={classes.root}>
-        <Headline />
+        { showHeadLine && <Headline /> }
         <Box className={classes.content}>
           {children}
         </Box>
