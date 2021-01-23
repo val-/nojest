@@ -18,6 +18,17 @@ INSERT INTO nj_language (code, title) VALUES ('RU', 'Russian');
 INSERT INTO nj_language (code, title) VALUES ('EN', 'English');
 
 CREATE TYPE nj_order_status AS ENUM ('ACTIVE', 'INACTIVE');
+CREATE TYPE nj_task_status AS ENUM (
+    'JUST_VIEWED',
+    'REQUESTED',
+    'REJECTED_BY_CONTRACTOR',
+    'REJECTED_BY_CUSTOMER',
+    'ASSIGNED',
+    'RESOLVED',
+    'DISPUTE',
+    'CANCELLED',
+    'DONE'
+);
 
 CREATE TYPE nj_gender_type AS ENUM ('MALE', 'FEMALE', 'NONE');
 
@@ -33,6 +44,8 @@ CREATE TABLE nj_user(
     gender nj_gender_type,
     country varchar(4),
     city varchar(4),
+    is_customer boolean,
+    is_contractor boolean,
     avatar text
 );
 
@@ -44,8 +57,30 @@ CREATE TABLE nj_order(
     language_code varchar(2) REFERENCES nj_language(code),
     description text,
     expected_price integer,
-    deadline date,
+    deadline timestamp,
     status nj_order_status
+);
+
+CREATE TABLE nj_task(
+    id SERIAL PRIMARY KEY,
+    order_id integer REFERENCES nj_order(id),
+    contractor_id integer REFERENCES nj_user(id),
+    contractor_price integer
+);
+
+CREATE TABLE nj_task_history(
+    id SERIAL PRIMARY KEY,
+    task_id integer REFERENCES nj_task(id),
+    date_time timestamp,
+    status nj_task_status
+);
+
+CREATE TABLE nj_message(
+    id SERIAL PRIMARY KEY,
+    task_id integer REFERENCES nj_task(id),
+    date_time timestamp,
+    author_id integer REFERENCES nj_user(id),
+    letter text
 );
 
 COPY public.nj_user (id, full_name, phone_number, email, email_confirmed, email_confirm_token, password_hash, date_of_birth, gender, country, city, avatar) FROM stdin;

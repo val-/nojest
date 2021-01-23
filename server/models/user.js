@@ -101,6 +101,8 @@ const generateUserProfile = user => new Promise(function(resolve, reject) {
         country: user.country,
         city: user.city,
         avatar: user.avatar,
+        isCustomer: user.is_customer || false,
+        isContractor: user.is_contractor || false,
     };
     if (user.gender !== 'NONE') {
         profile.gender = user.gender;
@@ -130,8 +132,8 @@ module.exports = {
         validateUserData(data).then(
             () => hashPassword(data.password)
         ).then((passwordHash) => db.query(
-            'INSERT INTO nj_user (email, email_confirmed, email_confirm_token, password_hash, full_name) VALUES ($1, $2, $3, $4, $5) returning id',
-            [ data.email, false, token, passwordHash, data.fullName ]
+            'INSERT INTO nj_user (email, email_confirmed, email_confirm_token, password_hash, full_name, is_customer, is_contractor) VALUES ($1, $2, $3, $4, $5, $6, $7) returning id',
+            [ data.email, false, token, passwordHash, data.fullName, true, true ]
         )).then(() => activationLinkLetter(
             data.email,
             `${siteUrl}/activation/${token}`
@@ -147,6 +149,8 @@ module.exports = {
             phoneNumber,
             country,
             city,
+            isCustomer,
+            isContractor,
         } = data;
         const dateOfBirthObj = new Date(dateOfBirth);
         validateProfileData(data).then(() => db.query(
@@ -157,7 +161,9 @@ module.exports = {
                 date_of_birth = $4,
                 phone_number = $5,
                 country = $6,
-                city = $7
+                city = $7,
+                is_customer = $8,
+                is_contractor = $9
                 WHERE email = $1
             `,
             [
@@ -168,6 +174,8 @@ module.exports = {
                 phoneNumber || 'NULL',
                 country || 'NULL',
                 city || 'NULL',
+                isCustomer,
+                isContractor,
             ]
         )).then(() => {
             findUserByEmail(email).then(user => {
