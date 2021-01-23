@@ -25,6 +25,7 @@ const generateOrderData = orderData => ({
     title: orderData.title,
     deadline: orderData.deadline,
     status: orderData.status,
+    expectedPrice: orderData.expected_price,
 });
 
 module.exports = {
@@ -97,7 +98,7 @@ module.exports = {
 
     getActualOrdersByUser: userId => new Promise((resolve, reject) => {
         db.query(
-            'SELECT id, title, deadline, status FROM nj_order WHERE author_id = $1',
+            'SELECT id, title, deadline, status, expected_price FROM nj_order WHERE author_id = $1',
             [userId]
         ).then(result => {
             if (result.rows) {
@@ -112,7 +113,7 @@ module.exports = {
 
     getActualJobsByUser: userId => new Promise((resolve, reject) => {
         db.query(
-            'SELECT id, title, deadline, status FROM nj_order WHERE author_id != $1',
+            'SELECT id, title, deadline, status, expected_price FROM nj_order WHERE author_id != $1',
             [userId]
         ).then(result => {
             if (result.rows) {

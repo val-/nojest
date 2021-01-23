@@ -88,7 +88,7 @@ const DashboardPage = props => {
           </CardMedia>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              Search new task
+              Get a job
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
               View actual available tasks.
@@ -99,7 +99,7 @@ const DashboardPage = props => {
         </CardActionArea>
         <CardActions>
           <Button size="small" color="primary" onClick={() => { openPage('jobs'); }}>
-            New task
+            View tasks
           </Button>
         </CardActions>
       </Card>

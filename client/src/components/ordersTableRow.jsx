@@ -23,6 +23,9 @@ function OrdersTableRow({ order }) {
           { order.title }
         </TableCell>
         <TableCell>
+          { order.expectedPrice }
+        </TableCell>
+        <TableCell>
           { deadline }
         </TableCell>
       </TableRow>

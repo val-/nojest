@@ -16,6 +16,7 @@ export default function OrdersTable({ ordersList }) {
           <TableRow>
             <TableCell>#</TableCell>
             <TableCell>Title</TableCell>
+            <TableCell>Bet</TableCell>
             <TableCell>Deadline</TableCell>
           </TableRow>
         </TableHead>
