@@ -5,6 +5,8 @@ import {
   TextField,
   Box,
   Typography,
+  FormControlLabel,
+  Switch,
   Link,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
@@ -27,8 +29,21 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     textAlign: 'center',
   },
+  mainTitle: {
+    paddingTop: theme.spacing(7),
+    textAlign: 'left',
+    height: theme.spacing(20),
+    position: 'relative',
+    textShadow: '7px 3px 20px rgba(0,0,0,0.8)',
+  },
   form: {
     padding: theme.spacing(4, 8),
+    position: 'relative',
+  },
+  bg: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
   },
   alert: {
     margin: theme.spacing(2, 0),
@@ -94,6 +109,26 @@ const RegistrationPage = () => {
     }));
   };
 
+  const handleIsCustomerChange = () => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        isCustomer: !formState.values.isCustomer,
+      },
+    }));
+  };
+
+  const handleIsContractorChange = () => {
+    setFormState(formState => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        isContractor: !formState.values.isContractor,
+      },
+    }));
+  };
+
   if (formState.loading) {
     return <ScreenLocker />;
   }
@@ -120,7 +155,8 @@ const RegistrationPage = () => {
           className={classes.form}
           onSubmit={handleSignUp}
         >
-          <Typography variant="h3" className={classes.title}>
+          <img src="static/images/clip/sign-up.jpg" alt="Join our team"  className={classes.bg}/>
+          <Typography variant="h3" className={classes.mainTitle}>
             Sign up
           </Typography>
           { formState.registrationError &&
@@ -158,8 +194,35 @@ const RegistrationPage = () => {
             type="password"
             value={formState.values.password || ''}
           />
+          <Box className={classes.formRow}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formState.values.isCustomer}
+                  onChange={handleIsCustomerChange}
+                  name="isCustomer"
+                  color="primary"
+                />
+              }
+              label="I`m customer"
+            />
+          </Box>
+          <Box className={classes.formRow}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formState.values.isContractor}
+                  onChange={handleIsContractorChange}
+                  name="isContractor"
+                  color="primary"
+                />
+              }
+              label="I`m contractor"
+            />
+          </Box>
           <Button
             className={classes.signInButton}
+            disabled={!formState.values.isCustomer && !formState.values.isContractor}
             color="primary"
             fullWidth
             size="large"

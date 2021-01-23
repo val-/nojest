@@ -6,8 +6,6 @@ import {
   Box,
   Avatar,
   FormControl,
-  FormControlLabel,
-  Switch,
   InputLabel,
   Select,
   MenuItem,
@@ -169,26 +167,6 @@ const ProfilePage = props => {
       values: {
         ...formState.values,
         dateOfBirth: newDate,
-      },
-    }));
-  };
-
-  const handleIsCustomerChange = () => {
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        isCustomer: !formState.values.isCustomer,
-      },
-    }));
-  };
-
-  const handleIsContractorChange = () => {
-    setFormState(formState => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        isContractor: !formState.values.isContractor,
       },
     }));
   };
@@ -399,32 +377,6 @@ const ProfilePage = props => {
                   <MenuItem value={'AER'}>Sochi</MenuItem>
                 </Select>
               </FormControl>
-            </Box>
-            <Box className={classes.formRow}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formState.values.isCustomer}
-                    onChange={handleIsCustomerChange}
-                    name="isCustomer"
-                    color="primary"
-                  />
-                }
-                label="I`m customer"
-              />
-            </Box>
-            <Box className={classes.formRow}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formState.values.isContractor}
-                    onChange={handleIsContractorChange}
-                    name="isContractor"
-                    color="primary"
-                  />
-                }
-                label="I`m contractor"
-              />
             </Box>
             <Box className={classes.formRowButtons}>
               <Button

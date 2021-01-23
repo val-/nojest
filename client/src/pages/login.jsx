@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(4),
   },
   logoBox: {
-    padding: theme.spacing(5)
+    paddingBottom: theme.spacing(6)
   },
   logoIcon: {
     display: 'block',
