@@ -132,8 +132,26 @@ module.exports = {
         validateUserData(data).then(
             () => hashPassword(data.password)
         ).then((passwordHash) => db.query(
-            'INSERT INTO nj_user (email, email_confirmed, email_confirm_token, password_hash, full_name, is_customer, is_contractor) VALUES ($1, $2, $3, $4, $5, $6, $7) returning id',
-            [ data.email, false, token, passwordHash, data.fullName, true, true ]
+            `
+                INSERT INTO nj_user (
+                    email,
+                    email_confirmed,
+                    email_confirm_token,
+                    password_hash,
+                    full_name,
+                    is_customer,
+                    is_contractor
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7) returning id
+            `,
+            [
+                data.email,
+                false,
+                token,
+                passwordHash,
+                data.fullName,
+                data.isCustomer || false,
+                data.isContractor || false,
+            ]
         )).then(() => activationLinkLetter(
             data.email,
             `${siteUrl}/activation/${token}`
