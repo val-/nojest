@@ -8,6 +8,8 @@ sudo docker build -t nojest .
 # Запустить контейнер
 sudo docker run --rm --name nojest -p 5432:5432 nojest
 
+#sudo docker build -t nojest . ; sudo docker run --rm --name nojest -p 5432:5432 nojest;
+
 # Открыть bash терминал в контейнере
 docker exec -it nojest bash
 # Подключиться к базе данных через psql

@@ -1,7 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Paper,
+  Card,
+  CardHeader,
+  CardContent,
+  CardMedia,
+  Avatar,
   Button,
   TextField,
   Box,
@@ -33,9 +37,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  paper: {
+  card: {
     width: theme.spacing(120),
-    padding: theme.spacing(8),
+  },
+  media: {
+    whiteSpace: 'pre',
+    padding: theme.spacing(2, 9),
+    background: 'rgba(0,0,0,0.17)',
+  },
+  content: {
+    padding: theme.spacing(2, 9),
   },
   textField: {
     marginBottom: theme.spacing(4),
@@ -104,100 +115,103 @@ const OrderPage = props => {
   return (
     <MainLayout>
       <Box className={classes.root}>
-        <Paper square className={classes.paper}>
-          <Typography variant="h4">
-            #{filedsState.id}
-          </Typography>
-          <form
-            className={classes.form}
-            onSubmit={handleSubmit}
-          >
-            { errorState &&
-              <Alert
-                severity="error"
-                className={classes.alert}
-              >
-                {errorState}
-              </Alert>
+        <Card square className={classes.card}>
+
+          <CardHeader
+            avatar={
+              <Avatar aria-label="recipe" className={classes.avatar}>
+                R
+              </Avatar>
             }
-            <TextField
-              className={classes.textField}
-              fullWidth
-              name="title"
-              type="text"
-              value={filedsState.title || ''}
-              onChange={handleChange}
-            />
-            <TextField
-              className={classes.textField}
-              fullWidth
-              name="description"
-              multiline
-              type="text"
-              value={filedsState.description || ''}
-              onChange={handleChange}
-            />
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Box className={classes.formRow}>
-                <Box className={classes.formCellHalf}>
-                  <TextField
-                    className={classes.textFieldInRow}
-                    fullWidth
-                    label="Expected price"
-                    name="expectedPrice"
-                    type="number"
-                    value={filedsState.expectedPrice || ''}
-                    onChange={handleChange}
+            action={
+              <Typography variant="h4">
+                
+              </Typography>
+            }
+            title={filedsState.title}
+            subheader={`order #${filedsState.id}`}
+          />
+          <CardMedia className={classes.media}>
+            {filedsState.description}
+          </CardMedia>
+          <CardContent className={classes.content}>
+
+            <form
+              className={classes.form}
+              onSubmit={handleSubmit}
+            >
+              { errorState &&
+                <Alert
+                  severity="error"
+                  className={classes.alert}
+                >
+                  {errorState}
+                </Alert>
+              }
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Box className={classes.formRow}>
+                  <Box className={classes.formCellHalf}>
+                    <TextField
+                      className={classes.textFieldInRow}
+                      fullWidth
+                      label="Expected price"
+                      name="expectedPrice"
+                      type="number"
+                      value={filedsState.expectedPrice || ''}
+                      onChange={handleChange}
+                    />
+                  </Box>
+                  <KeyboardDatePicker
+                    className={classes.datePicker}
+                    label="Deadline"
+                    format="dd.MM.yyyy"
+                    value={filedsState.deadline}
+                    onChange={handleDeadlineChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
                   />
                 </Box>
-                <KeyboardDatePicker
-                  className={classes.datePicker}
-                  label="Deadline"
-                  format="dd.MM.yyyy"
-                  value={filedsState.deadline}
-                  onChange={handleDeadlineChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
+              </MuiPickersUtilsProvider>
+              <Box className={classes.formRow}>
+                <FormControl className={classes.formControlSelect}>
+                  <InputLabel id="language-select-label">Target language</InputLabel>
+                  <Select
+                    labelId="language-select-label"
+                    id="language-select"
+                    className={classes.select}
+                    name="language"
+                    value={filedsState.language}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={'RU'}>Russian</MenuItem>
+                    <MenuItem value={'EN'}>English</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControlSelect}>
+                  <InputLabel id="platform-select-label">Target platform</InputLabel>
+                  <Select
+                    labelId="platform-select-label"
+                    id="platform-select"
+                    className={classes.select}
+                    name="platform"
+                    value={filedsState.platform}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={'ios'}>IOS</MenuItem>
+                    <MenuItem value={'android'}>Android</MenuItem>
+                    <MenuItem value={'tv'}>TV</MenuItem>
+                    <MenuItem value={'mac'}>Mac</MenuItem>
+                    <MenuItem value={'pc'}>PC</MenuItem>
+                    <MenuItem value={'web'}>Web</MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
-            </MuiPickersUtilsProvider>
-            <Box className={classes.formRow}>
-              <FormControl className={classes.formControlSelect}>
-                <InputLabel id="language-select-label">Target language</InputLabel>
-                <Select
-                  labelId="language-select-label"
-                  id="language-select"
-                  className={classes.select}
-                  name="language"
-                  value={filedsState.language}
-                  onChange={handleChange}
-                >
-                  <MenuItem value={'RU'}>Russian</MenuItem>
-                  <MenuItem value={'EN'}>English</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl className={classes.formControlSelect}>
-                <InputLabel id="platform-select-label">Target platform</InputLabel>
-                <Select
-                  labelId="platform-select-label"
-                  id="platform-select"
-                  className={classes.select}
-                  name="platform"
-                  value={filedsState.platform}
-                  onChange={handleChange}
-                >
-                  <MenuItem value={'ios'}>IOS</MenuItem>
-                  <MenuItem value={'android'}>Android</MenuItem>
-                  <MenuItem value={'tv'}>TV</MenuItem>
-                  <MenuItem value={'mac'}>Mac</MenuItem>
-                  <MenuItem value={'pc'}>PC</MenuItem>
-                  <MenuItem value={'web'}>Web</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </form>
-        </Paper>
+            </form>
+          
+          </CardContent>
+          
+        </Card>
       </Box>
     </MainLayout>
   );
