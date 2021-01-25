@@ -11,6 +11,7 @@ export const backendService = {
     getUserJobsList,
     updateProfile,
     uploadAvatar,
+    getUserInfo,
 };
 
 let sessionContextState;
@@ -58,6 +59,10 @@ function createOrder(params) {
 
 function getOrder(orderId) {
     return fetchJSON(`/api/order/${orderId}`)
+}
+
+function getUserInfo(userId) {
+    return fetchJSON(`/api/user/${userId}`)
 }
 
 function getUserOrdersList() {

@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardContent,
   CardMedia,
-  Avatar,
   Button,
   TextField,
   Box,
@@ -25,6 +24,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import MainLayout from '../components/mainLayout';
 import ScreenLocker from '../components/screenLocker';
+import UserPic from '../components/userPic';
 import { backendService as backend } from '../services/backendService';
 import { useParams } from 'react-router-dom';
 
@@ -119,9 +119,7 @@ const OrderPage = props => {
 
           <CardHeader
             avatar={
-              <Avatar aria-label="recipe" className={classes.avatar}>
-                R
-              </Avatar>
+              <UserPic userId={filedsState.authorId}/>
             }
             action={
               <Typography variant="h4">
