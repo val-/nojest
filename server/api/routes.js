@@ -14,6 +14,8 @@ const getOrder = require('./handlers/getOrder');
 const getTasksByOrder = require('./handlers/getTasksByOrder');
 const getUserOrders = require('./handlers/getUserOrders');
 const getUserJobs = require('./handlers/getUserJobs');
+const getMessagesByTask = require('./handlers/getMessagesByTask');
+const sendMessage = require('./handlers/sendMessage');
 
 router.get('/session-context', jsonParser, sessionContext);
 router.post('/login', jsonParser, login);
@@ -27,5 +29,7 @@ router.get('/user-orders', getUserOrders);
 router.get('/user-jobs', getUserJobs);
 router.get('/order/:orderId', getOrder);
 router.get('/tasks-by-order/:orderId', getTasksByOrder);
+router.get('/messages-by-task/:taskId', getMessagesByTask);
+router.post('/send-message', sendMessage);
 
 module.exports = router;

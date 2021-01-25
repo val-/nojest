@@ -92,7 +92,7 @@ module.exports = {
                 reject('Order not found');
             }
         }, () => {
-            reject('Order not found');
+            reject('getOrder() method error');
         });
     }),
 
@@ -101,13 +101,9 @@ module.exports = {
             'SELECT id, title, deadline, status, expected_price FROM nj_order WHERE author_id = $1',
             [userId]
         ).then(result => {
-            if (result.rows) {
-                resolve(result.rows.map(generateOrderData));
-            } else {
-                reject('Orders not found');
-            }
+            resolve(result.rows.map(generateOrderData));
         }, () => {
-            reject('Orders not found');
+            reject('getActualOrdersByUser() method error');
         });
     }),
 
@@ -116,13 +112,9 @@ module.exports = {
             'SELECT id, title, deadline, status, expected_price FROM nj_order WHERE author_id != $1',
             [userId]
         ).then(result => {
-            if (result.rows) {
-                resolve(result.rows.map(generateOrderData));
-            } else {
-                reject('Orders not found');
-            }
+            resolve(result.rows.map(generateOrderData));
         }, () => {
-            reject('Orders not found');
+            reject('getActualJobsByUser() method error');
         });
     }),
 
