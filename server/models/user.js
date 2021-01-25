@@ -127,6 +127,27 @@ module.exports = {
         }
     }),
 
+    getInfoById: userId => new Promise((resolve, reject) => {
+
+        db.query(
+            'SELECT avatar, full_name FROM nj_user WHERE id = $1',
+            [userId]
+        ).then(result => {
+            const user = result.rows[0];
+            if (user) {
+                resolve({
+                    avatar: user.avatar,
+                    fullName: user.full_name,
+                });
+            } else {
+                reject('getInfoById() method error: user not exist');
+            }
+        }, () => {
+            reject('getInfoById() method error');
+        }) 
+
+    }),
+
     create: (data, siteUrl) => new Promise((resolve, reject) => {
         const token = crypto.randomBytes(32).toString('hex');
         validateUserData(data).then(

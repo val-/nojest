@@ -16,6 +16,7 @@ const getUserOrders = require('./handlers/getUserOrders');
 const getUserJobs = require('./handlers/getUserJobs');
 const getMessagesByTask = require('./handlers/getMessagesByTask');
 const sendMessage = require('./handlers/sendMessage');
+const getUserInfoById = require('./handlers/getUserInfoById');
 
 router.get('/session-context', jsonParser, sessionContext);
 router.post('/login', jsonParser, login);
@@ -25,6 +26,7 @@ router.post('/activation', jsonParser, activation);
 router.post('/update-profile', jsonParser, updateProfile);
 router.post('/upload-avatar', jsonParser, uploadAvatar);
 router.post('/create-order', jsonParser, createOrder);
+router.get('/user/:userId', getUserInfoById);
 router.get('/user-orders', getUserOrders);
 router.get('/user-jobs', getUserJobs);
 router.get('/order/:orderId', getOrder);
