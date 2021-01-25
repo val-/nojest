@@ -47,14 +47,14 @@ const getTaskById = id => new Promise(function(resolve, reject) {
     });
 });
 
-const hasTask = (orderId, contractorId) => new Promise(function(resolve, reject) {
+const getTaskByOrderAndContractor = (orderId, contractorId) => new Promise(function(resolve, reject) {
     db.query(
         'SELECT * FROM nj_task WHERE (order_id = $1) AND (contractor_id = $2)',
         [ orderId, contractorId ]
     ).then(result => {
         const task = result.rows[0];
         if (task) {
-            resolve(task);
+            addTaskHistory(task).then(resolve, reject);
         } else {
             reject('Task not exist');
         }
@@ -94,11 +94,27 @@ const createTaskHistory = taskId => new Promise((resolve, reject) => {
     }).catch(reject);
 });
 
+const addTaskHistory = task => new Promise((resolve, reject) => {
+    db.query(
+        'SELECT * FROM nj_task_history WHERE task_id = $1',
+        [ task.id ]
+    ).then(result => {
+        const history = result.rows;
+        resolve({
+            ...task,
+            status: history[history.length-1].status,
+            history
+        });
+    }, () => {
+        reject('Task history not found');
+    });
+});
+
 
 module.exports = {
 
     createTaskWithHistory: (orderId, contractorId) => new Promise((resolve, reject) => {
-        hasTask(orderId, contractorId).then(existTask => {
+        getTaskByOrderAndContractor(orderId, contractorId).then(existTask => {
             resolve(existTask);
         }).catch(() => {
             createTask(orderId, contractorId).then(
@@ -107,6 +123,19 @@ module.exports = {
                 },
                 reject,
             );
+        });
+    }),
+
+    getTaskByOrderAndContractor,
+
+    getTasksByOrder: orderId => new Promise((resolve, reject) => {
+        db.query(
+            'SELECT * FROM nj_task WHERE order_id = $1',
+            [ orderId ]
+        ).then(result => {
+            Promise.all(result.rows.map(addTaskHistory)).then(resolve, reject);
+        }, () => {
+            reject('Tasks not found');
         });
     })
 

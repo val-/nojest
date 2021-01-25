@@ -6,15 +6,16 @@ module.exports = (req, res) => {
     const { authorizedUser } = req.session;
 
     Order.get(req.params.orderId).then(resp => {
+        const own = authorizedUser.id === resp.authorId;
         if (
             authorizedUser.isContractor &&
-            authorizedUser.id !== resp.authorId
+            !own
         ) {
             Task.createTaskWithHistory(req.params.orderId, authorizedUser.id).finally(() => {
-                res.json({ ...resp });
+                res.json({ ...resp, own });
             });
         } else {
-            res.json({ ...resp });
+            res.json({ ...resp, own });
         }
     }).catch(error => {
         res.json({ error });

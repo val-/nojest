@@ -11,6 +11,7 @@ const updateProfile = require('./handlers/updateProfile');
 const uploadAvatar = require('./handlers/uploadAvatar');
 const createOrder = require('./handlers/createOrder');
 const getOrder = require('./handlers/getOrder');
+const getTasksByOrder = require('./handlers/getTasksByOrder');
 const getUserOrders = require('./handlers/getUserOrders');
 const getUserJobs = require('./handlers/getUserJobs');
 
@@ -25,5 +26,6 @@ router.post('/create-order', jsonParser, createOrder);
 router.get('/user-orders', getUserOrders);
 router.get('/user-jobs', getUserJobs);
 router.get('/order/:orderId', getOrder);
+router.get('/tasks-by-order/:orderId', getTasksByOrder);
 
 module.exports = router;
