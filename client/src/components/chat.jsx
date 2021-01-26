@@ -49,6 +49,11 @@ const useStyles = makeStyles(theme => ({
   sendIcon: {
     color: theme.palette.primary.main,
   },
+  listItemText: {
+    '& .MuiListItemText-secondary': {
+      opacity: 0.5,
+    }
+  },
 }));
 
 export default function Chat({ taskId }) {
@@ -93,6 +98,7 @@ export default function Chat({ taskId }) {
         <UserPic userId={message.authorId}/>
       </ListItemAvatar>
       <ListItemText
+        className={classes.listItemText}
         primary={message.letter}
         secondary={ moment(message.dateTime).fromNow() }
       />
