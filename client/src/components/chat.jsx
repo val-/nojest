@@ -44,9 +44,17 @@ export default function Chat({ taskId }) {
   useEffect(() => {
     if (!initStartedState) {
         setInitStarted(true);
-        backend.getLettersByTask(taskId).then(setLetters);
+        updateLetters();
     }
   }, [initStartedState, taskId]);
+
+
+  const updateLetters = () => {
+    backend.getLettersByTask(taskId).then(resp => {
+      setLetters(resp);
+      backend.waitLettersByTask(taskId).then(updateLetters);
+    });
+  };
 
   const sendHandler = event => {
     event.preventDefault();

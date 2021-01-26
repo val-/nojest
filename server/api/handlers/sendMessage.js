@@ -4,10 +4,11 @@ module.exports = (req, res) => {
 
     const authorId = req.session.authorizedUser.id;
     const { taskId, letter } = req.body;
+    const dateTime = new Date();
 
     Message.sendLetter({
         taskId,
-        dateTime: new Date(),
+        dateTime,
         letter,
         authorId,
     }).then(messageId => {

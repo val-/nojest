@@ -87,7 +87,6 @@ const createTaskHistory = taskId => new Promise((resolve, reject) => {
             result.rows[0] &&
             result.rows[0].id
         ) {
-            console.log('result.rows[0].id: ', result.rows[0].id);
             resolve(result.rows[0].id);
         } else {
             reject('Task history create error');

@@ -1,5 +1,16 @@
 const db = require('./../config/database');
 
+const listenersByTask = {};
+
+function notifyListeners(taskId, dateTime) {
+    if (listenersByTask[taskId]) {
+        listenersByTask[taskId].forEach(cb => {
+            cb({ lastMessageDateTime: dateTime });
+        });
+        listenersByTask[taskId] = [];
+    }
+}
+
 module.exports = {
 
     sendLetter: data => new Promise((resolve, reject) => {
@@ -28,6 +39,7 @@ module.exports = {
                 result.rows[0] &&
                 result.rows[0].id
             ) {
+                notifyListeners(data.taskId, data.dateTime);
                 resolve(result.rows[0].id);
             } else {
                 reject('Send letter error');
@@ -51,6 +63,13 @@ module.exports = {
         }, () => {
             reject('getLettersByTask() method error');
         });
+    }),
+
+    waitLettersByTask: taskId => new Promise((resolve) => {
+        if (!listenersByTask[taskId]) {
+            listenersByTask[taskId] = [];
+        }
+        listenersByTask[taskId].push(resolve);
     }),
 
 

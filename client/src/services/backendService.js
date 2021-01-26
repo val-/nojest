@@ -8,6 +8,7 @@ export const backendService = {
     createOrder,
     sendMessage,
     getLettersByTask,
+    waitLettersByTask,
     getOrder,
     getUserOrdersList,
     getUserJobsList,
@@ -65,6 +66,10 @@ function sendMessage(params) {
 
 function getLettersByTask(taskId) {
     return fetchJSON(`/api/messages-by-task/${taskId}`)
+}
+
+function waitLettersByTask(taskId) {
+    return fetchJSON(`/api/wait-messages-by-task/${taskId}`)
 }
 
 function getOrder(orderId) {
