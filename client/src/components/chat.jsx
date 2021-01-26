@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
-  TextField,
-  Button,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -26,12 +24,30 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2, 2, 2, 9),
   },
   messageField: {
-      
+    background: 'none',
+    display: 'block',
+    border: 'none',
+    color: theme.palette.text.primary,
+    outline: 'none',
+    flexGrow: 1,
+    fontSize: '1rem',
+    '&::placeholder': {
+      color: theme.palette.text.primary,
+      opacity: 1,
+    }
+  },
+  sendButton: {
+    marginLeft: theme.spacing(4),
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    outline: 'none',
+    '&:disabled': {
+      opacity: 0.5,
+    },
   },
   sendIcon: {
-    marginLeft: theme.spacing(4),
-    marginTop: theme.spacing(2),
-    cursor: 'pointer',
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -47,7 +63,6 @@ export default function Chat({ taskId }) {
         updateLetters();
     }
   }, [initStartedState, taskId]);
-
 
   const updateLetters = () => {
     backend.getLettersByTask(taskId).then(resp => {
@@ -98,24 +113,21 @@ export default function Chat({ taskId }) {
         className={classes.messageForm}
         onSubmit={sendHandler}
       >
-        <TextField
+        <input
           className={classes.messageField}
-          fullWidth
-          label="Write your message here"
+          placeholder="Write your message here"
           name="message"
           type="text"
           value={messageState}
           onChange={messageChangeHandler}
         />
-        <Button
+        <button
           type="submit"
-          variant="contained"
-          color="primary"
-          className={classes.sendIcon}
-          endIcon={<SendIcon/>}
+          disabled={messageState === ''}
+          className={classes.sendButton}
         >
-          Send
-        </Button>
+          <SendIcon className={classes.sendIcon} fontSize="large"/>
+        </button>
       </form>
     </>
   );
