@@ -6,6 +6,8 @@ export const backendService = {
     registration,
     activation,
     createOrder,
+    sendMessage,
+    getLettersByTask,
     getOrder,
     getUserOrdersList,
     getUserJobsList,
@@ -55,6 +57,14 @@ function activation(token) {
 
 function createOrder(params) {
     return fetchJSON('/api/create-order', 'POST', params)
+}
+
+function sendMessage(params) {
+    return fetchJSON('/api/send-message', 'POST', params)
+}
+
+function getLettersByTask(taskId) {
+    return fetchJSON(`/api/messages-by-task/${taskId}`)
 }
 
 function getOrder(orderId) {

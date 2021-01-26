@@ -45,7 +45,7 @@ const OrderPage = props => {
             setOrdersReady(true);
         }, setError);
     }
-  });
+  }, [initStartedState]);
 
   if (!ordersReadyState) {
     return <ScreenLocker />;

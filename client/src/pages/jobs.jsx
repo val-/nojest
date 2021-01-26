@@ -50,7 +50,7 @@ const JobsPage = props => {
             setOrdersReady(true);
         }, setError);
     }
-  });
+  }, [authorizedUserState, initStartedState]);
 
   if (!ordersReadyState) {
     return <ScreenLocker />;

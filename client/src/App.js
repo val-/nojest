@@ -18,6 +18,7 @@ import DashboardPage from './pages/dashboard';
 import JobsPage from './pages/jobs';
 import OrdersPage from './pages/orders';
 import OrderPage from './pages/order';
+import TaskPage from './pages/task';
 import themePalette from './themePalette';
 import themeOverrides from './themeOverrides';
 import { backendService as backend } from './services/backendService';
@@ -96,6 +97,9 @@ function App() {
             </PrivateRoute>
             <PrivateRoute exact path="/order/:orderId">
               <OrderPage />
+            </PrivateRoute>
+            <PrivateRoute exact path="/task/:taskId">
+              <TaskPage />
             </PrivateRoute>
           </Switch>
         </Router>

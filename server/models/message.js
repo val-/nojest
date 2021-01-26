@@ -1,3 +1,5 @@
+const db = require('./../config/database');
+
 module.exports = {
 
     sendLetter: data => new Promise((resolve, reject) => {
@@ -40,7 +42,12 @@ module.exports = {
             'SELECT id, author_id, date_time, letter FROM nj_message WHERE task_id = $1',
             [taskId]
         ).then(result => {
-            resolve(result.rows);
+            resolve(result.rows.map(row => ({
+                id: row.id,
+                authorId: row.author_id,
+                dateTime: row.date_time,
+                letter: row.letter,
+            })));
         }, () => {
             reject('getLettersByTask() method error');
         });

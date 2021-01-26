@@ -32,6 +32,6 @@ router.get('/user-jobs', getUserJobs);
 router.get('/order/:orderId', getOrder);
 router.get('/tasks-by-order/:orderId', getTasksByOrder);
 router.get('/messages-by-task/:taskId', getMessagesByTask);
-router.post('/send-message', sendMessage);
+router.post('/send-message', jsonParser, sendMessage);
 
 module.exports = router;

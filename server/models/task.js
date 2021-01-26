@@ -38,7 +38,7 @@ const getTaskById = id => new Promise(function(resolve, reject) {
     ).then(result => {
         const task = result.rows[0];
         if (task) {
-            resolve(task);
+            addTaskHistory(reformatTask(task)).then(resolve, reject)
         } else {
             reject('Task not exist');
         }
@@ -54,7 +54,7 @@ const getTaskByOrderAndContractor = (orderId, contractorId) => new Promise(funct
     ).then(result => {
         const task = result.rows[0];
         if (task) {
-            addTaskHistory(task).then(resolve, reject);
+            addTaskHistory(reformatTask(task)).then(resolve, reject);
         } else {
             reject('Task not exist');
         }
@@ -87,6 +87,7 @@ const createTaskHistory = taskId => new Promise((resolve, reject) => {
             result.rows[0] &&
             result.rows[0].id
         ) {
+            console.log('result.rows[0].id: ', result.rows[0].id);
             resolve(result.rows[0].id);
         } else {
             reject('Task history create error');
@@ -99,7 +100,14 @@ const addTaskHistory = task => new Promise((resolve, reject) => {
         'SELECT * FROM nj_task_history WHERE task_id = $1',
         [ task.id ]
     ).then(result => {
-        const history = result.rows;
+        const history = result.rows.map(
+            row => ({
+                dateTime: row.date_time,
+                id: row.id,
+                status: row.status,
+                taskId: row.task_id,
+            }),
+        );
         resolve({
             ...task,
             status: history[history.length-1].status,
@@ -108,6 +116,14 @@ const addTaskHistory = task => new Promise((resolve, reject) => {
     }, () => {
         reject('Task history not found');
     });
+});
+
+const reformatTask = taskRow => ({
+    contractorId: taskRow.contractor_id,
+    contractorPrice: taskRow.contractor_price,
+    orderId: taskRow.order_id,
+    status: taskRow.status,
+    id: taskRow.id,
 });
 
 
@@ -119,7 +135,9 @@ module.exports = {
         }).catch(() => {
             createTask(orderId, contractorId).then(
                 taskId => {
-                    createTaskHistory(taskId).then(resolve, reject);
+                    createTaskHistory(taskId).then(() => {
+                        getTaskById(taskId).then(resolve, reject);
+                    }, reject);
                 },
                 reject,
             );
@@ -133,7 +151,7 @@ module.exports = {
             'SELECT * FROM nj_task WHERE order_id = $1',
             [ orderId ]
         ).then(result => {
-            Promise.all(result.rows.map(addTaskHistory)).then(resolve, reject);
+            Promise.all(result.rows.map(reformatTask).map(addTaskHistory)).then(resolve, reject);
         }, () => {
             reject('Tasks not found');
         });

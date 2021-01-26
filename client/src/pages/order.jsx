@@ -12,7 +12,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,
 } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -24,6 +23,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useHistory } from 'react-router-dom';
 import MainLayout from '../components/mainLayout';
 import ScreenLocker from '../components/screenLocker';
+import Chat from '../components/chat';
 import UserPic from '../components/userPic';
 import { backendService as backend } from '../services/backendService';
 import { useParams } from 'react-router-dom';
@@ -39,11 +39,17 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     width: theme.spacing(120),
+    marginBottom: theme.spacing(2),
+  },
+  cardActionButton: {
+    marginLeft: theme.spacing(2),
   },
   media: {
     whiteSpace: 'pre',
     padding: theme.spacing(2, 9),
     background: 'rgba(0,0,0,0.17)',
+    borderTop: 'rgba(0,0,0,0.3) 1px solid',
+    borderBottom: 'rgba(0,0,0,0.3) 1px solid',
   },
   content: {
     padding: theme.spacing(2, 9),
@@ -94,7 +100,7 @@ const OrderPage = props => {
             setOrderReady(true);
         }, setError);
     }
-  });
+  }, [initStartedState, orderId, filedsState]);
 
 
   const handleChange = event => {
@@ -108,108 +114,168 @@ const OrderPage = props => {
     event.preventDefault();
   };
 
+  const openTask = taskId => {
+    history.push(`/task/${taskId}`);
+  }
+
   if (!orderReadyState) {
     return <ScreenLocker />;
   }
 
+  const orderCard = (
+    <Card square className={classes.card}>
+      <CardHeader
+        avatar={
+          <UserPic userId={filedsState.authorId}/>
+        }
+        title={filedsState.title}
+        subheader={`order #${filedsState.id}`}
+      />
+      <CardMedia className={classes.media}>
+        {filedsState.description}
+      </CardMedia>
+      <CardContent className={classes.content}>
+        <form
+          className={classes.form}
+          onSubmit={handleSubmit}
+        >
+          { errorState &&
+            <Alert
+              severity="error"
+              className={classes.alert}
+            >
+              {errorState}
+            </Alert>
+          }
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Box className={classes.formRow}>
+              <Box className={classes.formCellHalf}>
+                <TextField
+                  className={classes.textFieldInRow}
+                  fullWidth
+                  label="Expected price"
+                  name="expectedPrice"
+                  type="number"
+                  value={filedsState.expectedPrice || ''}
+                  onChange={handleChange}
+                />
+              </Box>
+              <KeyboardDatePicker
+                className={classes.datePicker}
+                label="Deadline"
+                format="dd.MM.yyyy"
+                value={filedsState.deadline}
+                onChange={handleDeadlineChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Box>
+          </MuiPickersUtilsProvider>
+          <Box className={classes.formRow}>
+            <FormControl className={classes.formControlSelect}>
+              <InputLabel id="language-select-label">Target language</InputLabel>
+              <Select
+                labelId="language-select-label"
+                id="language-select"
+                className={classes.select}
+                name="language"
+                value={filedsState.language}
+                onChange={handleChange}
+              >
+                <MenuItem value={'RU'}>Russian</MenuItem>
+                <MenuItem value={'EN'}>English</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControlSelect}>
+              <InputLabel id="platform-select-label">Target platform</InputLabel>
+              <Select
+                labelId="platform-select-label"
+                id="platform-select"
+                className={classes.select}
+                name="platform"
+                value={filedsState.platform}
+                onChange={handleChange}
+              >
+                <MenuItem value={'ios'}>IOS</MenuItem>
+                <MenuItem value={'android'}>Android</MenuItem>
+                <MenuItem value={'tv'}>TV</MenuItem>
+                <MenuItem value={'mac'}>Mac</MenuItem>
+                <MenuItem value={'pc'}>PC</MenuItem>
+                <MenuItem value={'web'}>Web</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </form>
+      </CardContent>
+    </Card>
+  );
+
+  const handleTaskAction = () => {};
+
+  const generateTaskCardActions = task => {
+    if (task.status === 'JUST_VIEWED' && !filedsState.own) {
+      return (
+        <>
+          <Button
+            className={classes.cardActionButton}
+            color="primary"
+            variant="contained"
+            onClick={() => { handleTaskAction('REQUESTED') }}
+          >
+            Request this job
+          </Button>
+          <Button
+            className={classes.cardActionButton}
+            color="primary"
+            variant="contained"
+            onClick={() => { openTask(task.id) }}
+          >
+            Go to task
+          </Button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Button
+            className={classes.cardActionButton}
+            color="primary"
+            variant="contained"
+            onClick={() => { openTask(task.id) }}
+          >
+            Go to task
+          </Button>
+        </>
+      );
+    }
+
+  };
+  const generateTaskCard = (task, taskIndex) => (
+    <Card square className={classes.card} key={taskIndex}>
+      <CardHeader
+        className={classes.cardHeader}
+        avatar={
+          <UserPic userId={task.contractorId}/>
+        }
+        action={
+          generateTaskCardActions(task)
+        }
+        title={task.status}
+        subheader={`task #${task.id}`}
+      >
+      </CardHeader>
+      { task.status === 'JUST_VIEWED' && !filedsState.own &&
+        <Chat taskId={task.id}/>
+      }
+    </Card>
+  );
+
   return (
     <MainLayout>
       <Box className={classes.root}>
-        <Card square className={classes.card}>
-
-          <CardHeader
-            avatar={
-              <UserPic userId={filedsState.authorId}/>
-            }
-            action={
-              <Typography variant="h4">
-                
-              </Typography>
-            }
-            title={filedsState.title}
-            subheader={`order #${filedsState.id}`}
-          />
-          <CardMedia className={classes.media}>
-            {filedsState.description}
-          </CardMedia>
-          <CardContent className={classes.content}>
-
-            <form
-              className={classes.form}
-              onSubmit={handleSubmit}
-            >
-              { errorState &&
-                <Alert
-                  severity="error"
-                  className={classes.alert}
-                >
-                  {errorState}
-                </Alert>
-              }
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Box className={classes.formRow}>
-                  <Box className={classes.formCellHalf}>
-                    <TextField
-                      className={classes.textFieldInRow}
-                      fullWidth
-                      label="Expected price"
-                      name="expectedPrice"
-                      type="number"
-                      value={filedsState.expectedPrice || ''}
-                      onChange={handleChange}
-                    />
-                  </Box>
-                  <KeyboardDatePicker
-                    className={classes.datePicker}
-                    label="Deadline"
-                    format="dd.MM.yyyy"
-                    value={filedsState.deadline}
-                    onChange={handleDeadlineChange}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </Box>
-              </MuiPickersUtilsProvider>
-              <Box className={classes.formRow}>
-                <FormControl className={classes.formControlSelect}>
-                  <InputLabel id="language-select-label">Target language</InputLabel>
-                  <Select
-                    labelId="language-select-label"
-                    id="language-select"
-                    className={classes.select}
-                    name="language"
-                    value={filedsState.language}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value={'RU'}>Russian</MenuItem>
-                    <MenuItem value={'EN'}>English</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl className={classes.formControlSelect}>
-                  <InputLabel id="platform-select-label">Target platform</InputLabel>
-                  <Select
-                    labelId="platform-select-label"
-                    id="platform-select"
-                    className={classes.select}
-                    name="platform"
-                    value={filedsState.platform}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value={'ios'}>IOS</MenuItem>
-                    <MenuItem value={'android'}>Android</MenuItem>
-                    <MenuItem value={'tv'}>TV</MenuItem>
-                    <MenuItem value={'mac'}>Mac</MenuItem>
-                    <MenuItem value={'pc'}>PC</MenuItem>
-                    <MenuItem value={'web'}>Web</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </form>
-          
-          </CardContent>
-          
-        </Card>
+        { orderCard }
+        { filedsState.tasks && filedsState.tasks.map(generateTaskCard) }
       </Box>
     </MainLayout>
   );
