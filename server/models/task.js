@@ -1,4 +1,5 @@
 const db = require('./../config/database');
+const Order = require('./order');
 
 const createTask = (orderId, contractorId) => new Promise((resolve, reject) => {
     db.query(
@@ -143,6 +144,8 @@ module.exports = {
         });
     }),
 
+    getTaskById,
+
     getTaskByOrderAndContractor,
 
     getTasksByOrder: orderId => new Promise((resolve, reject) => {
@@ -154,7 +157,43 @@ module.exports = {
         }, () => {
             reject('Tasks not found');
         });
-    })
+    }),
+
+    statusFlowByContractor: {
+        JUST_VIEWED: [ 'REQUESTED', 'REJECTED_BY_CONTRACTOR' ],
+        REQUESTED: [],
+        REJECTED_BY_CONTRACTOR: [],
+        REJECTED_BY_CUSTOMER: [],
+        ASSIGNED: [ 'CANCELLED', 'RESOLVED' ],
+        RESOLVED: [],
+        DISPUTE: [ 'CANCELLED' ],
+        CANCELLED: [],
+        DONE: [],
+    },
+    
+    statusFlowByCustomer: {
+        JUST_VIEWED: [],
+        REQUESTED: [ 'ASSIGNED', 'REJECTED_BY_CUSTOMER' ],
+        REJECTED_BY_CONTRACTOR: [],
+        REJECTED_BY_CUSTOMER: [],
+        ASSIGNED: [],
+        RESOLVED: [ 'DONE', 'DISPUTE' ],
+        DISPUTE: [ 'DONE' ],
+        CANCELLED: [],
+        DONE: [],
+    },
+    
+    statusFlowByModerator: {
+        JUST_VIEWED: [],
+        REQUESTED: [],
+        REJECTED_BY_CONTRACTOR: [],
+        REJECTED_BY_CUSTOMER: [],
+        ASSIGNED: [],
+        RESOLVED: [],
+        DISPUTE: [ 'CANCELLED', 'DONE' ],
+        CANCELLED: [],
+        DONE: [],
+    },
 
 
 };

@@ -103,6 +103,7 @@ const generateUserProfile = user => new Promise(function(resolve, reject) {
         avatar: user.avatar,
         isCustomer: user.is_customer || false,
         isContractor: user.is_contractor || false,
+        isModerator: user.is_moderator || false,
     };
     if (user.gender !== 'NONE') {
         profile.gender = user.gender;

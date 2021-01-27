@@ -46,6 +46,7 @@ CREATE TABLE nj_user(
     city varchar(4),
     is_customer boolean,
     is_contractor boolean,
+    is_moderator boolean,
     avatar text
 );
 
