@@ -95,6 +95,38 @@ const createTaskHistory = taskId => new Promise((resolve, reject) => {
     }).catch(reject);
 });
 
+
+const addTaskHistoryRecord = (taskId, nextStatus) => new Promise((resolve, reject) => {
+    db.query(
+        `
+            INSERT INTO nj_task_history
+            (
+                task_id,
+                date_time,
+                status
+            )
+            VALUES ($1, $2, $3)
+            returning id
+        `,
+        [
+            taskId,
+            new Date(),
+            nextStatus
+        ]
+    ).then(result => {
+        if (
+            result &&
+            result.rows &&
+            result.rows[0] &&
+            result.rows[0].id
+        ) {
+            resolve(result.rows[0].id);
+        } else {
+            reject('Task history add error');
+        }
+    }).catch(reject);
+});
+
 const addTaskHistory = task => new Promise((resolve, reject) => {
     db.query(
         'SELECT * FROM nj_task_history WHERE task_id = $1',
@@ -126,6 +158,10 @@ const reformatTask = taskRow => ({
     id: taskRow.id,
 });
 
+const changeStatus = (taskId, nextStatus, contractorPrice) => new Promise((resolve, reject) => {
+    addTaskHistoryRecord(taskId, nextStatus).then(resolve, reject);
+    // TODO update contractorPrice
+});
 
 module.exports = {
 
@@ -195,5 +231,6 @@ module.exports = {
         DONE: [],
     },
 
+    changeStatus,
 
 };
