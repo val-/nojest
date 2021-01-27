@@ -16,6 +16,7 @@ export const backendService = {
     updateProfile,
     uploadAvatar,
     getUserInfo,
+    changeTaskStatus,
 };
 
 let sessionContextState;
@@ -63,6 +64,10 @@ function createOrder(params) {
 
 function sendMessage(params) {
     return fetchJSON('/api/send-message', 'POST', params)
+}
+
+function changeTaskStatus(params) {
+    return fetchJSON('/api/change-task-status', 'POST', params)
 }
 
 function getLettersByTask(taskId) {

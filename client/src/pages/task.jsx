@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/styles';
 import MainLayout from '../components/mainLayout';
 import Chat from '../components/chat';
 import UserPic from '../components/userPic';
+import ConfirmActionPopup from '../components/confirmActionPopup';
 import { backendService as backend } from '../services/backendService';
 
 const useStyles = makeStyles(theme => ({
@@ -40,6 +41,7 @@ const TaskPage = props => {
 
   const [initStartedState, setInitStarted] = useState(false);
   const [taskState, setTask] = useState({});
+  const [nextStatusDialogState, setNextStatusDialog] = useState(false);
   const [errorState, setError] = useState(false);
 
   useEffect(() => {
@@ -49,13 +51,19 @@ const TaskPage = props => {
     }
   }, [initStartedState, taskId, taskState]);
 
-  const handleTaskAction = nextStatus => {
-    console.log('handleTaskAction: ', nextStatus);
-  };
-
   const openOrder = orderId => {
     history.push(`/order/${orderId}`);
-  }
+  };
+
+  const confirmStatusChangeHandler = params => {
+    setNextStatusDialog(false);
+    backend.changeTaskStatus({
+      ...params,
+      taskId,
+    }).then(() => {
+      backend.getTask(taskId).then(setTask, setError);
+    }, setError);
+  };
 
   const generateTaskCardActions = nextStatusVariants => (
     <>
@@ -67,7 +75,7 @@ const TaskPage = props => {
             color="primary"
             variant="contained"
             key={nextStatus}
-            onClick={() => { handleTaskAction(nextStatus) }}
+            onClick={() => { setNextStatusDialog(nextStatus) }}
           >
             { nextStatus }
           </Button>
@@ -128,6 +136,11 @@ const TaskPage = props => {
         <Card square className={classes.card}>
           <Chat taskId={taskId}/>
         </Card>
+        <ConfirmActionPopup
+          nextStatus={nextStatusDialogState}
+          handleClose={() => { setNextStatusDialog(false); }}
+          handleConfirm={confirmStatusChangeHandler}
+        />
       </Box>
     </MainLayout>
   );
