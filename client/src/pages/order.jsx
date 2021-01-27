@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   Card,
@@ -101,7 +100,6 @@ const OrderPage = props => {
         }, setError);
     }
   }, [initStartedState, orderId, filedsState]);
-
 
   const handleChange = event => {
     event.persist();
@@ -211,7 +209,9 @@ const OrderPage = props => {
     </Card>
   );
 
-  const handleTaskAction = () => {};
+  const handleTaskAction = nextStatus => {
+    console.log('handleTaskAction: ', nextStatus);
+  };
 
   const generateTaskCardActions = task => {
     if (task.status === 'JUST_VIEWED' && !filedsState.own) {

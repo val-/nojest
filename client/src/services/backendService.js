@@ -10,6 +10,7 @@ export const backendService = {
     getLettersByTask,
     waitLettersByTask,
     getOrder,
+    getTask,
     getUserOrdersList,
     getUserJobsList,
     updateProfile,
@@ -74,6 +75,10 @@ function waitLettersByTask(taskId) {
 
 function getOrder(orderId) {
     return fetchJSON(`/api/order/${orderId}`)
+}
+
+function getTask(taskId) {
+    return fetchJSON(`/api/task/${taskId}`)
 }
 
 function getUserInfo(userId) {
