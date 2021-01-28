@@ -133,7 +133,9 @@ export default function Chat({ task }) {
       letter: messageState,
     }).then(() => {
       setMessage('');
-      backend.getLettersByTask(task.id).then(setLetters);
+      backend.getLettersByTask(task.id).then(resp => {
+        setLetters(mergeLettersWithHistory(resp, task.history));
+      });
     });
   };
 

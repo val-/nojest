@@ -283,7 +283,7 @@ const OrderPage = props => {
       >
       </CardHeader>
       { task.status === 'JUST_VIEWED' && !filedsState.own &&
-        <Chat taskId={task.id}/>
+        <Chat task={task}/>
       }
     </Card>
   );
