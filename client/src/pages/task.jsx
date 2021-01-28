@@ -154,9 +154,13 @@ const TaskPage = props => {
       <Box className={classes.root}>
         { generateOrderCard(taskState.order) }
         { generateTaskCard(taskState) }
-        <Card square className={classes.card}>
-          <Chat taskId={taskId}/>
-        </Card>
+        { taskState.id === undefined ? '':
+          <Card square className={classes.card}>
+            <Chat
+              task={taskState}
+            />
+          </Card>
+        }
         <ConfirmActionPopup
           nextStatus={nextStatusDialogState}
           handleClose={() => { setNextStatusDialog(false); }}

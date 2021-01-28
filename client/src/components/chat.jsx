@@ -5,6 +5,7 @@ import {
   ListItemAvatar,
   ListItemText,
   List,
+  Chip,
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import moment from 'moment';
@@ -54,9 +55,12 @@ const useStyles = makeStyles(theme => ({
       opacity: 0.5,
     }
   },
+  status: {
+    background: theme.palette.primary.light,
+  },
 }));
 
-export default function Chat({ taskId }) {
+export default function Chat({ task }) {
   const classes = useStyles();
   const [messageState, setMessage] = useState('');
   const [lettersState, setLetters] = useState([]);
@@ -64,26 +68,72 @@ export default function Chat({ taskId }) {
 
   useEffect(() => {
     if (!initStartedState) {
-        setInitStarted(true);
-        updateLetters();
+      setInitStarted(true);
+      updateLetters();
     }
-  }, [initStartedState, taskId]);
+  }, [initStartedState, task.id]);
 
   const updateLetters = () => {
-    backend.getLettersByTask(taskId).then(resp => {
-      setLetters(resp);
-      backend.waitLettersByTask(taskId).then(updateLetters);
+    backend.getLettersByTask(task.id).then(resp => {
+      setLetters(mergeLettersWithHistory(resp, task.history));
+      backend.waitLettersByTask(task.id).then(updateLetters);
     });
+  };
+
+  const dateTimeSorter = (a, b) => {
+    const A = moment(a.dateTime);
+    const B = moment(b.dateTime);
+    if (A.isAfter(B)) {
+      return 1;
+    } else if (B.isAfter(A)) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+
+  const mergeLettersWithHistory = (letters=[], history=[]) => {
+    return letters.map(msg => ({
+      authorId: msg.authorId,
+      dateTime: msg.dateTime,
+      letter: msg.letter,
+    })).concat(history.map(rec => ({
+      authorId: getHistoryRecordAuthor(rec.status),
+      dateTime: rec.dateTime,
+      isStatusRecord: true,
+      letter: rec.status,
+    }))).sort(dateTimeSorter);
+  };
+
+  const getHistoryRecordAuthor = status => {
+    if (
+      status === 'JUST_VIEWED' ||
+      status === 'REQUESTED' ||
+      status === 'REJECTED_BY_CONTRACTOR' ||
+      status === 'RESOLVED' ||
+      status === 'CANCELLED'
+    ) {
+      return task.contractorId;
+    } else if (
+      status === 'REJECTED_BY_CUSTOMER' ||
+      status === 'ASSIGNED' ||
+      status === 'DISPUTE' ||
+      status === 'DONE'
+    ) {
+      return task.order.authorId;
+    } else {
+      return -1;
+    }
   };
 
   const sendHandler = event => {
     event.preventDefault();
     backend.sendMessage({
-      taskId,
+      taskId: task.id,
       letter: messageState,
     }).then(() => {
       setMessage('');
-      backend.getLettersByTask(taskId).then(setLetters);
+      backend.getLettersByTask(task.id).then(setLetters);
     });
   };
 
@@ -92,14 +142,21 @@ export default function Chat({ taskId }) {
     setMessage(event.target.value);
   };
 
-  const renderLetter = message => (
-    <ListItem key={message.id}>
+  const renderLetter = (message, messageIndex) => (
+    <ListItem key={messageIndex}>
       <ListItemAvatar>
         <UserPic userId={message.authorId}/>
       </ListItemAvatar>
       <ListItemText
         className={classes.listItemText}
-        primary={message.letter}
+        primary={
+          message.isStatusRecord ?
+          <Chip
+            className={classes.status}
+            label={message.letter}
+          /> :
+          message.letter
+        }
         secondary={ moment(message.dateTime).fromNow() }
       />
     </ListItem>
