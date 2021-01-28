@@ -14,6 +14,7 @@ import Chat from '../components/chat';
 import UserPic from '../components/userPic';
 import ConfirmActionPopup from '../components/confirmActionPopup';
 import { backendService as backend } from '../services/backendService';
+import { utilsService as utils } from '../services/utilsService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,6 +44,18 @@ const TaskPage = props => {
   const [taskState, setTask] = useState({});
   const [nextStatusDialogState, setNextStatusDialog] = useState(false);
   const [errorState, setError] = useState(false);
+
+
+  const actionButtonsByNextStatus = {
+    REQUESTED: 'Request this job',
+    REJECTED_BY_CONTRACTOR: 'Reject',
+    REJECTED_BY_CUSTOMER: 'Reject',
+    ASSIGNED: 'Assign',
+    RESOLVED: 'Resolve',
+    DISPUTE: 'Dispute',
+    CANCELLED: 'Cancel',
+    DONE: 'Done',
+  };
 
   useEffect(() => {
     if (!initStartedState) {
@@ -77,7 +90,7 @@ const TaskPage = props => {
             key={nextStatus}
             onClick={() => { setNextStatusDialog(nextStatus) }}
           >
-            { nextStatus }
+            { actionButtonsByNextStatus[nextStatus] }
           </Button>
           )
         )
@@ -121,7 +134,15 @@ const TaskPage = props => {
         action={
           generateTaskCardActions(task.nextStatusVariants)
         }
-        title={task.status}
+        title={
+          <>
+            { task.status }
+            { 
+              task.status === 'REQUESTED' &&
+              <span> { utils.formatPrice(task.contractorPrice) }</span>
+            }
+          </>
+        }
         subheader={`task #${task.id}`}
       >
       </CardHeader>

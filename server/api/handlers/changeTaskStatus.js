@@ -3,7 +3,6 @@ var Task = require('./../../models/task');
 module.exports = (req, res) => {
 
     const { taskId, nextStatus, contractorPrice } = req.body;
-    const dateTime = new Date();
 
     // TODO permissions check!!!
 

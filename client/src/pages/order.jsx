@@ -24,7 +24,9 @@ import MainLayout from '../components/mainLayout';
 import ScreenLocker from '../components/screenLocker';
 import Chat from '../components/chat';
 import UserPic from '../components/userPic';
+import ConfirmActionPopup from '../components/confirmActionPopup';
 import { backendService as backend } from '../services/backendService';
+import { utilsService as utils } from '../services/utilsService';
 import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -86,16 +88,13 @@ const OrderPage = props => {
   const [orderReadyState, setOrderReady] = useState(false);
   const [filedsState, setFields] = useState({});
   const [errorState, setError] = useState(false);
-
+  const [nextStatusDialogState, setNextStatusDialog] = useState(false);
 
   useEffect(() => {
     if (!initStartedState) {
         setInitStarted(true);
         backend.getOrder(orderId).then(resp => {
-            setFields({
-                ...resp,
-                ...filedsState,
-            });
+            setFields(resp);
             setOrderReady(true);
         }, setError);
     }
@@ -209,8 +208,18 @@ const OrderPage = props => {
     </Card>
   );
 
-  const handleTaskAction = nextStatus => {
-    console.log('handleTaskAction: ', nextStatus);
+  const confirmStatusChangeHandler = params => {
+    setNextStatusDialog(false);
+    setOrderReady(false);
+    backend.changeTaskStatus({
+      ...params,
+      taskId: filedsState.tasks[0].id,
+    }).then(() => {
+      backend.getOrder(orderId).then(resp => {
+        setFields(resp);
+        setOrderReady(true);
+      }, setError);
+    }, setError);
   };
 
   const generateTaskCardActions = task => {
@@ -221,7 +230,7 @@ const OrderPage = props => {
             className={classes.cardActionButton}
             color="primary"
             variant="contained"
-            onClick={() => { handleTaskAction('REQUESTED') }}
+            onClick={() => { setNextStatusDialog('REQUESTED') }}
           >
             Request this job
           </Button>
@@ -261,7 +270,15 @@ const OrderPage = props => {
         action={
           generateTaskCardActions(task)
         }
-        title={task.status}
+        title={
+          <>
+            { task.status }
+            { 
+              task.status === 'REQUESTED' &&
+              <span> { utils.formatPrice(task.contractorPrice) }</span>
+            }
+          </>
+        }
         subheader={`task #${task.id}`}
       >
       </CardHeader>
@@ -276,6 +293,11 @@ const OrderPage = props => {
       <Box className={classes.root}>
         { orderCard }
         { filedsState.tasks && filedsState.tasks.map(generateTaskCard) }
+        <ConfirmActionPopup
+          nextStatus={nextStatusDialogState}
+          handleClose={() => { setNextStatusDialog(false); }}
+          handleConfirm={confirmStatusChangeHandler}
+        />
       </Box>
     </MainLayout>
   );
