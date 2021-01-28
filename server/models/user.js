@@ -104,6 +104,7 @@ const generateUserProfile = user => new Promise(function(resolve, reject) {
         isCustomer: user.is_customer || false,
         isContractor: user.is_contractor || false,
         isModerator: user.is_moderator || false,
+        balance: 12500,
     };
     if (user.gender !== 'NONE') {
         profile.gender = user.gender;
