@@ -1,5 +1,15 @@
 const db = require('./../config/database');
-const Order = require('./order');
+
+const listenersByTask = {};
+
+function notifyListeners(taskId, dateTime) {
+    if (listenersByTask[taskId]) {
+        listenersByTask[taskId].forEach(cb => {
+            cb({ lastMessageDateTime: dateTime });
+        });
+        listenersByTask[taskId] = [];
+    }
+}
 
 const createTask = (orderId, contractorId) => new Promise((resolve, reject) => {
     db.query(
@@ -96,7 +106,7 @@ const createTaskHistory = taskId => new Promise((resolve, reject) => {
 });
 
 
-const addTaskHistoryRecord = (taskId, nextStatus) => new Promise((resolve, reject) => {
+const addTaskHistoryRecord = (taskId, nextStatus, dateTime) => new Promise((resolve, reject) => {
     db.query(
         `
             INSERT INTO nj_task_history
@@ -110,7 +120,6 @@ const addTaskHistoryRecord = (taskId, nextStatus) => new Promise((resolve, rejec
         `,
         [
             taskId,
-            new Date(),
             nextStatus
         ]
     ).then(result => {
@@ -171,10 +180,15 @@ const reformatTask = taskRow => ({
 });
 
 const changeStatus = (taskId, nextStatus, contractorPrice) => new Promise((resolve, reject) => {
-    addTaskHistoryRecord(taskId, nextStatus).then(resp => {
+    const dateTime = new Date();
+    addTaskHistoryRecord(taskId, nextStatus, dateTime).then(resp => {
         if (contractorPrice) {
-            setContractorPrice(taskId, contractorPrice).then(resolve, reject);
+            setContractorPrice(taskId, contractorPrice).then(() => {
+                notifyListeners(taskId, dateTime);
+                resolve(resp);    
+            }, reject);
         } else {
+            notifyListeners(taskId, dateTime);
             resolve(resp);
         }
     }, reject);
@@ -249,5 +263,12 @@ module.exports = {
     },
 
     changeStatus,
+
+    waitStatusChangeByTask: taskId => new Promise((resolve) => {
+        if (!listenersByTask[taskId]) {
+            listenersByTask[taskId] = [];
+        }
+        listenersByTask[taskId].push(resolve);
+    }),
 
 };

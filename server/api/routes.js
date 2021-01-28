@@ -17,6 +17,7 @@ const getUserOrders = require('./handlers/getUserOrders');
 const getUserJobs = require('./handlers/getUserJobs');
 const getMessagesByTask = require('./handlers/getMessagesByTask');
 const waitMessagesByTask = require('./handlers/waitMessagesByTask');
+const waitStatusChangeByTask = require('./handlers/waitStatusChangeByTask');
 const sendMessage = require('./handlers/sendMessage');
 const changeTaskStatus = require('./handlers/changeTaskStatus');
 const getUserInfoById = require('./handlers/getUserInfoById');
@@ -37,6 +38,7 @@ router.get('/task/:taskId', getTask);
 router.get('/tasks-by-order/:orderId', getTasksByOrder);
 router.get('/messages-by-task/:taskId', getMessagesByTask);
 router.get('/wait-messages-by-task/:taskId', waitMessagesByTask);
+router.get('/wait-status-change-by-task/:taskId', waitStatusChangeByTask);
 router.post('/send-message', jsonParser, sendMessage);
 router.post('/change-task-status', jsonParser, changeTaskStatus);
 
