@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const TaskPage = props => {
+const TaskPage = () => {
 
   const classes = useStyles();
   const history = useHistory();
@@ -60,9 +60,17 @@ const TaskPage = props => {
   useEffect(() => {
     if (!initStartedState) {
         setInitStarted(true);
-        backend.getTask(taskId).then(setTask, setError);
+        updateTask();
     }
   }, [initStartedState, taskId, taskState]);
+
+  const updateTask = () => {
+    setTask({});
+    backend.getTask(taskId).then(resp => {
+      setTask(resp);
+      backend.waitStatusChangeByTask(taskId).then(updateTask);
+    }, setError);
+  }
 
   const openOrder = orderId => {
     history.push(`/order/${orderId}`);

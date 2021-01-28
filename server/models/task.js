@@ -120,6 +120,7 @@ const addTaskHistoryRecord = (taskId, nextStatus, dateTime) => new Promise((reso
         `,
         [
             taskId,
+            dateTime,
             nextStatus
         ]
     ).then(result => {
