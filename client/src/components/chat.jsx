@@ -184,6 +184,7 @@ export default function Chat({ task }) {
           name="message"
           type="text"
           value={messageState}
+          autoComplete="off"
           onChange={messageChangeHandler}
         />
         <button
