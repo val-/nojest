@@ -10,6 +10,7 @@ import {
 import SendIcon from '@material-ui/icons/Send';
 import moment from 'moment';
 import UserPic from '../components/userPic';
+import generateRandomText from '../utils/generateRandomText';
 
 import { backendService as backend } from '../services/backendService';
 
@@ -76,6 +77,7 @@ export default function Chat({ task }) {
   const updateLetters = () => {
     backend.getLettersByTask(task.id).then(resp => {
       setLetters(mergeLettersWithHistory(resp, task.history));
+      updateScroll();
       backend.waitLettersByTask(task.id).then(updateLetters);
     });
   };
@@ -126,17 +128,35 @@ export default function Chat({ task }) {
     }
   };
 
-  const sendHandler = event => {
-    event.preventDefault();
+  const updateScroll = () => {
+    const root = document.documentElement;
+    root.scrollTop = root.scrollHeight;
+  };
+
+  const doSendMessage = text => {
     backend.sendMessage({
       taskId: task.id,
-      letter: messageState,
+      letter: text,
     }).then(() => {
       setMessage('');
       backend.getLettersByTask(task.id).then(resp => {
         setLetters(mergeLettersWithHistory(resp, task.history));
+        updateScroll();
       });
     });
+  };
+
+  const sendHandler = event => {
+    event.preventDefault();
+    doSendMessage(messageState);
+  };
+
+  const messageKeyDownHandler = event => {
+    if (event.ctrlKey && event.keyCode === 77) {
+      setInterval(() => {
+        doSendMessage(generateRandomText());
+      }, 500)
+    }
   };
 
   const messageChangeHandler = event => {
@@ -186,6 +206,7 @@ export default function Chat({ task }) {
           value={messageState}
           autoComplete="off"
           onChange={messageChangeHandler}
+          onKeyDown={messageKeyDownHandler}
         />
         <button
           type="submit"
